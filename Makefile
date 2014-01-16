@@ -1,3 +1,4 @@
+# Generated automatically from Makefile.pre by makesetup.
 # Top-level Makefile for Python
 #
 # As distributed, this file is called Makefile.pre.in; it is processed
@@ -20,92 +21,91 @@
 
 # === Variables set by makesetup ===
 
-MODOBJS=        _MODOBJS_
-MODLIBS=        _MODLIBS_
+MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/symtablemodule.o  Modules/xxsubtype.o
+MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 
 # === Variables set by configure
-VERSION=	@VERSION@
-srcdir=		@srcdir@
-VPATH=		@srcdir@
-abs_srcdir=	@abs_srcdir@
-abs_builddir=	@abs_builddir@
-build=		@build@
-host=		@host@
+VERSION=	2.7
+srcdir=		.
 
-CC=		@CC@
-CXX=		@CXX@
-MAINCC=		@MAINCC@
-LINKCC=		@LINKCC@
-AR=		@AR@
-RANLIB=		@RANLIB@
-SVNVERSION=	@SVNVERSION@
-HGVERSION=	@HGVERSION@
-HGTAG=		@HGTAG@
-HGBRANCH=	@HGBRANCH@
+abs_srcdir=	/nfs/src/Python-2.7.5
+abs_builddir=	/nfs/src/Python-2.7.5
+build=		x86_64-unknown-linux-gnu
+host=		x86_64-unknown-linux-gnu
 
-GNULD=          @GNULD@
+CC=		gcc -pthread
+CXX=		g++ -pthread
+MAINCC=		$(CC)
+LINKCC=		$(PURIFY) $(MAINCC)
+AR=		ar
+RANLIB=		ranlib
+SVNVERSION=	svnversion $(srcdir)
+HGVERSION=	
+HGTAG=		
+HGBRANCH=	
+
+GNULD=          yes
 
 # Shell used by make (some versions default to the login shell, which is bad)
 SHELL=		/bin/sh
 
 # Use this to make a link between python$(VERSION) and python in $(BINDIR)
-LN=		@LN@
+LN=		ln
 
 # Portable install script (configure doesn't always guess right)
-INSTALL=	@INSTALL@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
-INSTALL_SCRIPT= @INSTALL_SCRIPT@
-INSTALL_DATA=	@INSTALL_DATA@
+INSTALL=	/usr/bin/install -c
+INSTALL_PROGRAM=${INSTALL}
+INSTALL_SCRIPT= ${INSTALL}
+INSTALL_DATA=	${INSTALL} -m 644
 # Shared libraries must be installed with executable mode on some systems;
 # rather than figuring out exactly which, we always give them executable mode.
 # Also, making them read-only seems to be a good idea...
 INSTALL_SHARED= ${INSTALL} -m 555
 
-MKDIR_P=	@MKDIR_P@
+MKDIR_P=	/bin/mkdir -p
 
 MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
-OPT=		@OPT@
-BASECFLAGS=	@BASECFLAGS@
-#fuheng - strip
-CFLAGS=		$(BASECFLAGS) @CFLAGS@ $(OPT) $(EXTRA_CFLAGS) -s
+OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
+BASECFLAGS=	 -fno-strict-aliasing
+CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS)
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
-CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include @CPPFLAGS@
-LDFLAGS=	@LDFLAGS@
-LDLAST=		@LDLAST@
-SGI_ABI=	@SGI_ABI@
-CCSHARED=	@CCSHARED@
-LINKFORSHARED=	@LINKFORSHARED@
-ARFLAGS=	@ARFLAGS@
+CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include 
+LDFLAGS=	-s
+LDLAST=		
+SGI_ABI=	
+CCSHARED=	-fPIC
+LINKFORSHARED=	-Xlinker -export-dynamic
+ARFLAGS=	rc
 # Extra C flags added for building the interpreter object files.
-CFLAGSFORSHARED=@CFLAGSFORSHARED@
+CFLAGSFORSHARED=
 # C flags used for building the interpreter object files
 PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 
 
 # Machine-dependent subdirectories
-MACHDEP=	@MACHDEP@
+MACHDEP=	linux2
 
 # Multiarch directory (may be empty)
-MULTIARCH=	@MULTIARCH@
+MULTIARCH=	x86_64-linux-gnu
 
 # Install prefix for architecture-independent files
-prefix=		@prefix@
+prefix=		/usr/local/py275
 
 # Install prefix for architecture-dependent files
-exec_prefix=	@exec_prefix@
+exec_prefix=	${prefix}
 
 # Install prefix for data files
-datarootdir=    @datarootdir@
+datarootdir=    ${prefix}/share
 
 # Expanded directories
-BINDIR=		@bindir@
-LIBDIR=		@libdir@
-MANDIR=		@mandir@
-INCLUDEDIR=	@includedir@
+BINDIR=		${exec_prefix}/bin
+LIBDIR=		${exec_prefix}/lib
+MANDIR=		${datarootdir}/man
+INCLUDEDIR=	${prefix}/include
 CONFINCLUDEDIR=	$(exec_prefix)/include
 SCRIPTDIR=	$(prefix)/lib
 
@@ -117,33 +117,33 @@ CONFINCLUDEPY=	$(CONFINCLUDEDIR)/python$(VERSION)
 LIBP=		$(LIBDIR)/python$(VERSION)
 
 # Symbols used for using shared libraries
-SO=		@SO@
-LDSHARED=	@LDSHARED@ $(LDFLAGS)
-BLDSHARED=	@BLDSHARED@ $(LDFLAGS)
-LDCXXSHARED=	@LDCXXSHARED@
+SO=		.so
+LDSHARED=	$(CC) -shared $(LDFLAGS)
+BLDSHARED=	$(CC) -shared $(LDFLAGS)
+LDCXXSHARED=	$(CXX) -shared
 DESTSHARED=	$(BINLIBDEST)/lib-dynload
 
 # Executable suffix (.exe on Windows and Mac OS X)
-EXE=		@EXEEXT@
-BUILDEXE=	@BUILDEXEEXT@
+EXE=		
+BUILDEXE=	
 
 # Short name and location for Mac OS X Python framework
-UNIVERSALSDK=@UNIVERSALSDK@
-PYTHONFRAMEWORK=	@PYTHONFRAMEWORK@
-PYTHONFRAMEWORKDIR=	@PYTHONFRAMEWORKDIR@
-PYTHONFRAMEWORKPREFIX=	@PYTHONFRAMEWORKPREFIX@
-PYTHONFRAMEWORKINSTALLDIR= @PYTHONFRAMEWORKINSTALLDIR@
+UNIVERSALSDK=
+PYTHONFRAMEWORK=	
+PYTHONFRAMEWORKDIR=	no-framework
+PYTHONFRAMEWORKPREFIX=	
+PYTHONFRAMEWORKINSTALLDIR= 
 # Deployment target selected during configure, to be checked
 # by distutils. The export statement is needed to ensure that the
 # deployment target is active during build.
-MACOSX_DEPLOYMENT_TARGET=@CONFIGURE_MACOSX_DEPLOYMENT_TARGET@
-@EXPORT_MACOSX_DEPLOYMENT_TARGET@export MACOSX_DEPLOYMENT_TARGET
+MACOSX_DEPLOYMENT_TARGET=
+#export MACOSX_DEPLOYMENT_TARGET
 
 # Options to enable prebinding (for fast startup prior to Mac OS X 10.3)
-OTHER_LIBTOOL_OPT=@OTHER_LIBTOOL_OPT@
+OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       @RUNSHARED@
+RUNSHARED=       
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -152,11 +152,11 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	@CONFIG_ARGS@
+CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--disable-shared' '--without-pydebug'
 
 
 # Subdirectories with code
-SRCDIRS= 	@SRCDIRS@
+SRCDIRS= 	Parser Grammar Objects Python Modules Mac
 
 # Other subdirectories
 SUBDIRSTOO=	Include Lib Misc Demo
@@ -168,41 +168,57 @@ DISTDIRS=	$(SUBDIRS) $(SUBDIRSTOO) Ext-dummy
 DIST=		$(DISTFILES) $(DISTDIRS)
 
 
-LIBRARY=	@LIBRARY@
-LDLIBRARY=      @LDLIBRARY@
-BLDLIBRARY=     @BLDLIBRARY@
-DLLLIBRARY=	@DLLLIBRARY@
-LDLIBRARYDIR=   @LDLIBRARYDIR@
-INSTSONAME=	@INSTSONAME@
+LIBRARY=	libpython$(VERSION).a
+LDLIBRARY=      libpython$(VERSION).a
+BLDLIBRARY=     $(LDLIBRARY)
+DLLLIBRARY=	
+LDLIBRARYDIR=   
+INSTSONAME=	$(LDLIBRARY)
 
 
-LIBS=		@LIBS@
-LIBM=		@LIBM@
-LIBC=		@LIBC@
+LIBS=		-lpthread -ldl  -lutil
+LIBM=		-lm
+LIBC=		
 SYSLIBS=	$(LIBM) $(LIBC)
-SHLIBS=		@SHLIBS@
+SHLIBS=		$(LIBS)
 
-THREADOBJ=	@THREADOBJ@
-DLINCLDIR=	@DLINCLDIR@
-DYNLOADFILE=	@DYNLOADFILE@
-MACHDEP_OBJS=	@MACHDEP_OBJS@
+THREADOBJ=	Python/thread.o
+DLINCLDIR=	.
+DYNLOADFILE=	dynload_shlib.o
+MACHDEP_OBJS=	
 LIBOBJDIR=	Python/
-LIBOBJS=	@LIBOBJS@
-UNICODE_OBJS=   @UNICODE_OBJS@
+LIBOBJS=	
+UNICODE_OBJS=   Objects/unicodeobject.o Objects/unicodectype.o
 
 PYTHON=		python$(EXE)
 BUILDPYTHON=	python$(BUILDEXE)
 BUILDPVM=	pvm$(BUILDEXE)
 
-PYTHON_FOR_BUILD=@PYTHON_FOR_BUILD@
-_PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
-HOST_GNU_TYPE=  @host@
+PYTHON_FOR_BUILD=./$(BUILDPYTHON) -E
+_PYTHON_HOST_PLATFORM=
+HOST_GNU_TYPE=  x86_64-unknown-linux-gnu
 
 # The task to run while instrument when building the profile-opt target
 PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 #PROFILE_TASK=	$(srcdir)/Lib/test/regrtest.py
 
 # === Definitions added by makesetup ===
+
+LOCALMODLIBS=           
+BASEMODLIBS=
+GLHACK=-Dclear=__GLclear
+PYTHONPATH=$(COREPYTHONPATH)
+COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)$(OLDPATH)
+OLDPATH=:lib-old
+TKPATH=:lib-tk
+EXTRAMACHDEPPATH=
+MACHDEPPATH=:plat-$(MACHDEP)
+TESTPATH=
+SITEPATH=
+DESTPATH=
+MACHDESTLIB=$(BINLIBDEST)
+DESTLIB=$(LIBDEST)
+
 
 
 ##########################################################################
@@ -214,7 +230,7 @@ MODULE_OBJS=	\
 		Modules/gcmodule.o
 
 # Used of signalmodule.o is not available
-SIGNAL_OBJS=	@SIGNAL_OBJS@
+SIGNAL_OBJS=	
 
 
 ##########################################################################
@@ -224,7 +240,7 @@ GRAMMAR_C=	Python/graminit.c
 GRAMMAR_INPUT=	$(srcdir)/Grammar/Grammar
 
 
-LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
+LIBFFI_INCLUDEDIR=	
 
 ##########################################################################
 # Parser
@@ -823,12 +839,12 @@ memtest:	all platform
 		$(TESTPYTHON) $(TESTPROG) $(MEMTESTOPTS)
 
 # Install everything
-install:	@FRAMEWORKINSTALLFIRST@ altinstall bininstall maninstall @FRAMEWORKINSTALLLAST@
+install:	 altinstall bininstall maninstall 
 
 # Install almost everything without disturbing previous versions
-altinstall:	@FRAMEWORKALTINSTALLFIRST@ altbininstall libinstall inclinstall \
+altinstall:	 altbininstall libinstall inclinstall \
 				libainstall altmaninstall \
-                sharedinstall oldsharedinstall @FRAMEWORKALTINSTALLLAST@
+                sharedinstall oldsharedinstall 
 
 # Install shared libraries enabled by Setup
 DESTDIRS=	$(exec_prefix) $(LIBDIR) $(BINLIBDEST) $(DESTSHARED)
@@ -919,8 +935,8 @@ maninstall:	altmaninstall
 
 # Install the library
 PLATDIR=	plat-$(MACHDEP)
-EXTRAPLATDIR= @EXTRAPLATDIR@
-EXTRAMACHDEPPATH=@EXTRAMACHDEPPATH@
+EXTRAPLATDIR= 
+EXTRAMACHDEPPATH=
 MACHDEPS=	$(PLATDIR) $(EXTRAPLATDIR)
 XMLLIBSUBDIRS=  xml xml/dom xml/etree xml/parsers xml/sax
 PLATMACDIRS= plat-mac plat-mac/Carbon plat-mac/lib-scriptpackages \
@@ -1351,7 +1367,7 @@ patchcheck:
 
 # Dependencies
 
-Python/thread.o: @THREADHEADERS@
+Python/thread.o:  $(srcdir)/Python/thread_atheos.h $(srcdir)/Python/thread_beos.h $(srcdir)/Python/thread_cthread.h $(srcdir)/Python/thread_foobar.h $(srcdir)/Python/thread_lwp.h $(srcdir)/Python/thread_nt.h $(srcdir)/Python/thread_os2.h $(srcdir)/Python/thread_pth.h $(srcdir)/Python/thread_pthread.h $(srcdir)/Python/thread_sgi.h $(srcdir)/Python/thread_solaris.h $(srcdir)/Python/thread_wince.h
 
 # Declare targets that aren't real files
 .PHONY: all build_all sharedmods oldsharedmods test quicktest memtest
@@ -1364,3 +1380,28 @@ Python/thread.o: @THREADHEADERS@
 .PHONY: gdbhooks
 
 # IF YOU PUT ANYTHING HERE IT WILL GO AWAY
+
+# Rules appended by makedepend
+
+Modules/threadmodule.o: $(srcdir)/Modules/threadmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/threadmodule.c -o Modules/threadmodule.o
+Modules/threadmodule$(SO):  Modules/threadmodule.o; $(BLDSHARED)  Modules/threadmodule.o   -o Modules/threadmodule$(SO)
+Modules/signalmodule.o: $(srcdir)/Modules/signalmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/signalmodule.c -o Modules/signalmodule.o
+Modules/signalmodule$(SO):  Modules/signalmodule.o; $(BLDSHARED)  Modules/signalmodule.o   -o Modules/signalmodule$(SO)
+Modules/posixmodule.o: $(srcdir)/Modules/posixmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/posixmodule.c -o Modules/posixmodule.o
+Modules/posixmodule$(SO):  Modules/posixmodule.o; $(BLDSHARED)  Modules/posixmodule.o   -o Modules/posixmodule$(SO)
+Modules/errnomodule.o: $(srcdir)/Modules/errnomodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/errnomodule.c -o Modules/errnomodule.o
+Modules/errnomodule$(SO):  Modules/errnomodule.o; $(BLDSHARED)  Modules/errnomodule.o   -o Modules/errnomodule$(SO)
+Modules/pwdmodule.o: $(srcdir)/Modules/pwdmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/pwdmodule.c -o Modules/pwdmodule.o
+Modules/pwdmodule$(SO):  Modules/pwdmodule.o; $(BLDSHARED)  Modules/pwdmodule.o   -o Modules/pwdmodule$(SO)
+Modules/_sre.o: $(srcdir)/Modules/_sre.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_sre.c -o Modules/_sre.o
+Modules/_sre$(SO):  Modules/_sre.o; $(BLDSHARED)  Modules/_sre.o   -o Modules/_sre$(SO)
+Modules/_codecsmodule.o: $(srcdir)/Modules/_codecsmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_codecsmodule.c -o Modules/_codecsmodule.o
+Modules/_codecsmodule$(SO):  Modules/_codecsmodule.o; $(BLDSHARED)  Modules/_codecsmodule.o   -o Modules/_codecsmodule$(SO)
+Modules/_weakref.o: $(srcdir)/Modules/_weakref.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_weakref.c -o Modules/_weakref.o
+Modules/_weakref$(SO):  Modules/_weakref.o; $(BLDSHARED)  Modules/_weakref.o   -o Modules/_weakref$(SO)
+Modules/zipimport.o: $(srcdir)/Modules/zipimport.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/zipimport.c -o Modules/zipimport.o
+Modules/zipimport$(SO):  Modules/zipimport.o; $(BLDSHARED)  Modules/zipimport.o   -o Modules/zipimport$(SO)
+Modules/symtablemodule.o: $(srcdir)/Modules/symtablemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/symtablemodule.c -o Modules/symtablemodule.o
+Modules/_symtablemodule$(SO):  Modules/symtablemodule.o; $(BLDSHARED)  Modules/symtablemodule.o   -o Modules/_symtablemodule$(SO)
+Modules/xxsubtype.o: $(srcdir)/Modules/xxsubtype.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/xxsubtype.c -o Modules/xxsubtype.o
+Modules/xxsubtype$(SO):  Modules/xxsubtype.o; $(BLDSHARED)  Modules/xxsubtype.o   -o Modules/xxsubtype$(SO)

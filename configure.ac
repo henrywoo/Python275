@@ -1068,7 +1068,8 @@ then
 		# debug builds.
 		OPT="-g -O0 -Wall $STRICT_PROTO"
 	    else
-		OPT="-g $WRAP -O3 -Wall $STRICT_PROTO"
+		#OPT="-g $WRAP -O3 -Wall $STRICT_PROTO"
+		OPT="$WRAP -O3 -Wall $STRICT_PROTO"
 	    fi
 	    ;;
 	*)

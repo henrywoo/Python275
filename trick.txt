@@ -1,0 +1,9 @@
+1. The "No module named _sysconfigdata_nd" is a bug in the Ubuntu package.
+
+You can create a softlink as a workaround:
+
+cd /usr/lib/python2.7
+sudo ln -s plat-x86_64-linux-gnu/_sysconfigdata_nd.py .
+
+https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466
+
