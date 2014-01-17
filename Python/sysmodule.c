@@ -1248,7 +1248,7 @@ make_flags(void)
     SetFlag(Py_NoUserSiteDirectory);
     SetFlag(Py_NoSiteFlag);
     SetFlag(Py_IgnoreEnvironmentFlag);
-    SetFlag(Py_TabcheckFlag);
+    //SetFlag(Py_TabcheckFlag);
     SetFlag(Py_VerboseFlag);
 #ifdef RISCOS
     SetFlag(Py_RISCOSWimpFlag);

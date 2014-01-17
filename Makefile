@@ -70,12 +70,12 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
 BASECFLAGS=	 -fno-strict-aliasing
 #fuheng - strip
-CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS)
+CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS) -s
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
 CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include 
-LDFLAGS=	-s
+LDFLAGS=	
 LDLAST=		
 SGI_ABI=	
 CCSHARED=	-fPIC
@@ -192,7 +192,7 @@ LIBOBJS=
 UNICODE_OBJS=   Objects/unicodeobject.o Objects/unicodectype.o
 
 PYTHON=		python$(EXE)
-BUILDPYTHON=	python$(BUILDEXE)
+#BUILDPYTHON=	python$(BUILDEXE)
 BUILDPVM=	pvm$(BUILDEXE)
 
 PYTHON_FOR_BUILD=./$(BUILDPYTHON) -E
@@ -246,35 +246,36 @@ LIBFFI_INCLUDEDIR=
 
 ##########################################################################
 # Parser
-PGEN=		Parser/pgen$(EXE)
-
-PSRCS=		\
-		Parser/acceler.c \
-		Parser/grammar1.c \
-		Parser/listnode.c \
-		Parser/node.c \
-		Parser/parser.c \
-		Parser/parsetok.c \
-		Parser/bitset.c \
-		Parser/metagrammar.c \
-		Parser/firstsets.c \
-		Parser/grammar.c \
-		Parser/pgen.c
-
-POBJS=		\
-		Parser/acceler.o \
-		Parser/grammar1.o \
-		Parser/listnode.o \
-		Parser/node.o \
-		Parser/parser.o \
-		Parser/parsetok.o \
-		Parser/bitset.o \
-		Parser/metagrammar.o \
-		Parser/firstsets.o \
-		Parser/grammar.o \
-		Parser/pgen.o
-
-PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
+#PGEN=		Parser/pgen$(EXE)
+#
+#PSRCS=		\
+#		Parser/acceler.c \
+#		Parser/grammar1.c \
+#		Parser/listnode.c \
+#		Parser/node.c \
+#		Parser/parser.c \
+#		Parser/parsetok.c \
+#		Parser/bitset.c \
+#		Parser/metagrammar.c \
+#		Parser/firstsets.c \
+#		Parser/grammar.c \
+#		Parser/pgen.c
+#
+#POBJS=		\
+#		Parser/acceler.o \
+#		Parser/grammar1.o \
+#		Parser/listnode.o \
+#		Parser/node.o \
+#		Parser/parser.o \
+#		Parser/parsetok.o \
+#		Parser/bitset.o \
+#		Parser/metagrammar.o \
+#		Parser/firstsets.o \
+#		Parser/grammar.o \
+#		Parser/pgen.o
+#
+#PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
+PARSER_OBJS=	
 
 PGSRCS=		\
 		Objects/obmalloc.c \
@@ -300,27 +301,23 @@ PGENSRCS=	$(PSRCS) $(PGSRCS)
 PGENOBJS=	$(POBJS) $(PGOBJS)
 
 ##########################################################################
-# AST
-AST_H_DIR=	Include
-AST_H=		$(AST_H_DIR)/Python-ast.h
-AST_C_DIR=	Python
-AST_C=		$(AST_C_DIR)/Python-ast.c
-AST_ASDL=	$(srcdir)/Parser/Python.asdl
-
-ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
-# XXX Note that a build now requires Python exist before the build starts
-ASDLGEN=	$(srcdir)/Parser/asdl_c.py
-
+## AST
+#AST_H_DIR=	Include
+#AST_H=		$(AST_H_DIR)/Python-ast.h
+#AST_C_DIR=	Python
+#AST_C=		$(AST_C_DIR)/Python-ast.c
+#AST_ASDL=	$(srcdir)/Parser/Python.asdl
+#
+#ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
+## XXX Note that a build now requires Python exist before the build starts
+#ASDLGEN=	$(srcdir)/Parser/asdl_c.py
+#
 ##########################################################################
 # Python
 PYTHON_OBJS=	\
 		Python/_warnings.o \
-		Python/Python-ast.o \
-		Python/asdl.o \
-		Python/ast.o \
 		Python/bltinmodule.o \
 		Python/ceval.o \
-		Python/compile.o \
 		Python/codecs.o \
 		Python/errors.o \
 		Python/frozen.o \
@@ -345,9 +342,8 @@ PYTHON_OBJS=	\
 		Python/pymath.o \
 		Python/pystate.o \
 		Python/pythonrun.o \
-                Python/random.o \
+		Python/random.o \
 		Python/structmember.o \
-		Python/symtable.o \
 		Python/sysmodule.o \
 		Python/traceback.o \
 		Python/getopt.o \
@@ -359,7 +355,12 @@ PYTHON_OBJS=	\
 		Python/$(DYNLOADFILE) \
 		$(LIBOBJS) \
 		$(MACHDEP_OBJS) \
-		$(THREADOBJ)
+		$(THREADOBJ) \
+#		Python/compile.o \
+#		Python/symtable.o \
+#		Python/Python-ast.o \
+#		Python/asdl.o \
+#		Python/ast.o \
 
 
 ##########################################################################
@@ -421,7 +422,8 @@ LIBRARY_OBJS=	\
 
 # Default target
 all:		build_all
-build_all:	$(BUILDPYTHON) $(BUILDPVM) oldsharedmods sharedmods gdbhooks
+#build_all:	$(BUILDPYTHON) $(BUILDPVM) oldsharedmods sharedmods gdbhooks
+build_all:	$(BUILDPVM)
 
 # Compile a binary with gcc profile guided optimization.
 profile-opt:

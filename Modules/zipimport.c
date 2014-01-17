@@ -1047,18 +1047,19 @@ normalize_line_endings(PyObject *source)
 static PyObject *
 compile_source(char *pathname, PyObject *source)
 {
-    PyObject *code, *fixed_source;
-
-    fixed_source = normalize_line_endings(source);
-    if (fixed_source == NULL)
-        return NULL;
-
-    code = Py_CompileString(PyString_AsString(fixed_source), pathname,
-                            Py_file_input);
-    Py_DECREF(fixed_source);
-    return code;
+      return NULL;
+//    PyObject *code, *fixed_source;
+//
+//    fixed_source = normalize_line_endings(source);
+//    if (fixed_source == NULL)
+//        return NULL;
+//
+//    code = Py_CompileString(PyString_AsString(fixed_source), pathname,
+//                            Py_file_input);
+//    Py_DECREF(fixed_source);
+//    return code;
 }
-
+//
 /* Convert the date/time values found in the Zip archive to a value
    that's compatible with the time stamp stored in .pyc files. */
 static time_t

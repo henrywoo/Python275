@@ -30,7 +30,7 @@ symtable_symtable(PyObject *self, PyObject *args)
            "symtable() arg 3 must be 'exec' or 'eval' or 'single'");
         return NULL;
     }
-    st = Py_SymtableString(str, filename, start);
+//    st = Py_SymtableString(str, filename, start);
     if (st == NULL)
         return NULL;
     t = st->st_symbols;

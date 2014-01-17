@@ -2057,6 +2057,61 @@ type_init(PyObject *cls, PyObject *args, PyObject *kwds)
     return res;
 }
 
+PyObject *
+_Py_Mangle(PyObject *privateobj, PyObject *ident)
+{
+    /* Name mangling: __private becomes _classname__private.
+       This is independent from how the name is used. */
+    const char *p, *name = PyString_AsString(ident);
+    char *buffer;
+    size_t nlen, plen;
+    if (privateobj == NULL || !PyString_Check(privateobj) ||
+        name == NULL || name[0] != '_' || name[1] != '_') {
+        Py_INCREF(ident);
+        return ident;
+    }    
+    p = PyString_AsString(privateobj);
+    nlen = strlen(name);
+    /* Don't mangle __id__ or names with dots.
+
+       The only time a name with a dot can occur is when
+       we are compiling an import statement that has a
+       package name.
+
+       TODO(jhylton): Decide whether we want to support
+       mangling of the module name, e.g. __M.X.
+    */
+    if ((name[nlen-1] == '_' && name[nlen-2] == '_') 
+        || strchr(name, '.')) {
+        Py_INCREF(ident);
+        return ident; /* Don't mangle __whatever__ */
+    }    
+    /* Strip leading underscores from class name */
+    while (*p == '_') 
+        p++;
+    if (*p == '\0') {
+        Py_INCREF(ident);
+        return ident; /* Don't mangle if class is just underscores */
+    }    
+    plen = strlen(p);
+
+    if (plen + nlen >= PY_SSIZE_T_MAX - 1) { 
+        PyErr_SetString(PyExc_OverflowError,
+                        "private identifier too large to be mangled");
+        return NULL;
+    }    
+
+    ident = PyString_FromStringAndSize(NULL, 1 + nlen + plen);
+    if (!ident)
+        return 0;
+    /* ident = "_" + p[:plen] + name # i.e. 1+plen+nlen bytes */
+    buffer = PyString_AS_STRING(ident);
+    buffer[0] = '_'; 
+    strncpy(buffer+1, p, plen);
+    strcpy(buffer+1+plen, name);
+    return ident;
+}
+
 static PyObject *
 type_new(PyTypeObject *metatype, PyObject *args, PyObject *kwds)
 {

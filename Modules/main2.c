@@ -1,5 +1,7 @@
 #include "Python.h"
+#include "marshal.h"
 
+static PyObject *run_pyo(FILE *fp, const char *filename, PyObject *globals, PyObject *locals);
 // run pyc/pyo file directly with PVM
 int 
 Py_Main_Backend(int argc, char **argv){
@@ -30,7 +32,7 @@ Py_Main_Backend(int argc, char **argv){
         Py_DECREF(f);
     }
     Py_OptimizeFlag = 1;
-    v = run_pyc_file(fp, filename, d, d, NULL);//
+    v = run_pyo(fp, filename, d, d);//
     if (v == NULL) {
         PyErr_Print();
         ret = -1;
@@ -43,4 +45,32 @@ Py_Main_Backend_done:
         PyErr_Clear();
     Py_Finalize();
     return ret;
+}
+
+static PyObject *run_pyo(FILE *fp, const char *filename, PyObject *globals, PyObject *locals)
+{
+    PyCodeObject *co;
+    PyObject *v;
+    long magic;
+    long PyImport_GetMagicNumber(void);
+
+    magic = PyMarshal_ReadLongFromFile(fp);
+    if (magic != PyImport_GetMagicNumber()) {
+        PyErr_SetString(PyExc_RuntimeError,
+                   "Bad magic number in .pyc file");
+        return NULL;
+    }
+    (void) PyMarshal_ReadLongFromFile(fp);
+    v = PyMarshal_ReadLastObjectFromFile(fp);
+    fclose(fp);
+    if (v == NULL || !PyCode_Check(v)) {
+        Py_XDECREF(v);
+        PyErr_SetString(PyExc_RuntimeError,
+                   "Bad code object in .pyc file");
+        return NULL;
+    }
+    co = (PyCodeObject *)v;
+    v = PyEval_EvalCode(co, globals, locals);
+    Py_DECREF(co);
+    return v;
 }

@@ -32,7 +32,7 @@ extern void init_sre(void);
 extern void init_codecs(void);
 extern void init_weakref(void);
 extern void initzipimport(void);
-extern void init_symtable(void);
+//extern void init_symtable(void);
 extern void initxxsubtype(void);
 
 /* -- ADDMODULE MARKER 1 -- */
@@ -40,7 +40,7 @@ extern void initxxsubtype(void);
 extern void PyMarshal_Init(void);
 extern void initimp(void);
 extern void initgc(void);
-extern void init_ast(void);
+//extern void init_ast(void);
 extern void _PyWarnings_Init(void);
 
 struct _inittab _PyImport_Inittab[] = {
@@ -54,7 +54,8 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_codecs", init_codecs},
 	{"_weakref", init_weakref},
 	{"zipimport", initzipimport},
-	{"_symtable", init_symtable},
+	//{"_symtable", init_symtable},
+	{"_symtable", NULL},
 	{"xxsubtype", initxxsubtype},
 
 /* -- ADDMODULE MARKER 2 -- */
@@ -66,7 +67,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"imp", initimp},
 
     /* This lives in Python/Python-ast.c */
-    {"_ast", init_ast},
+    {"_ast", NULL},
+    //{"_ast", init_ast},
 
     /* These entries are here for sys.builtin_module_names */
     {"__main__", NULL},

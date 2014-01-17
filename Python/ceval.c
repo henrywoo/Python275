@@ -139,8 +139,8 @@ static PyObject * cmp_outcome(int, PyObject *, PyObject *);
 static PyObject * import_from(PyObject *, PyObject *);
 static int import_all_from(PyObject *, PyObject *);
 static PyObject * build_class(PyObject *, PyObject *, PyObject *);
-static int exec_statement(PyFrameObject *,
-                          PyObject *, PyObject *, PyObject *);
+//static int exec_statement(PyFrameObject *,
+//                          PyObject *, PyObject *, PyObject *);
 static void set_exc_info(PyThreadState *, PyObject *, PyObject *, PyObject *);
 static void reset_exc_info(PyThreadState *);
 static void format_exc_check_arg(PyObject *, char *, PyObject *);
@@ -1871,18 +1871,19 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
             why = WHY_YIELD;
             goto fast_yield;
 
-        case EXEC_STMT:
-            w = TOP();
-            v = SECOND();
-            u = THIRD();
-            STACKADJ(-3);
-            READ_TIMESTAMP(intr0);
-            err = exec_statement(f, u, v, w);
-            READ_TIMESTAMP(intr1);
-            Py_DECREF(u);
-            Py_DECREF(v);
-            Py_DECREF(w);
-            break;
+        // fuheng
+        //case EXEC_STMT:
+        //    w = TOP();
+        //    v = SECOND();
+        //    u = THIRD();
+        //    STACKADJ(-3);
+        //    READ_TIMESTAMP(intr0);
+        //    err = exec_statement(f, u, v, w);
+        //    READ_TIMESTAMP(intr1);
+        //    Py_DECREF(u);
+        //    Py_DECREF(v);
+        //    Py_DECREF(w);
+        //    break;
 
         case POP_BLOCK:
             {
@@ -4657,111 +4658,111 @@ build_class(PyObject *methods, PyObject *bases, PyObject *name)
     return result;
 }
 
-static int
-exec_statement(PyFrameObject *f, PyObject *prog, PyObject *globals,
-               PyObject *locals)
-{
-    int n;
-    PyObject *v;
-    int plain = 0;
-
-    if (PyTuple_Check(prog) && globals == Py_None && locals == Py_None &&
-        ((n = PyTuple_Size(prog)) == 2 || n == 3)) {
-        /* Backward compatibility hack */
-        globals = PyTuple_GetItem(prog, 1);
-        if (n == 3)
-            locals = PyTuple_GetItem(prog, 2);
-        prog = PyTuple_GetItem(prog, 0);
-    }
-    if (globals == Py_None) {
-        globals = PyEval_GetGlobals();
-        if (locals == Py_None) {
-            locals = PyEval_GetLocals();
-            plain = 1;
-        }
-        if (!globals || !locals) {
-            PyErr_SetString(PyExc_SystemError,
-                            "globals and locals cannot be NULL");
-            return -1;
-        }
-    }
-    else if (locals == Py_None)
-        locals = globals;
-    if (!PyString_Check(prog) &&
-#ifdef Py_USING_UNICODE
-        !PyUnicode_Check(prog) &&
-#endif
-        !PyCode_Check(prog) &&
-        !PyFile_Check(prog)) {
-        PyErr_SetString(PyExc_TypeError,
-            "exec: arg 1 must be a string, file, or code object");
-        return -1;
-    }
-    if (!PyDict_Check(globals)) {
-        PyErr_SetString(PyExc_TypeError,
-            "exec: arg 2 must be a dictionary or None");
-        return -1;
-    }
-    if (!PyMapping_Check(locals)) {
-        PyErr_SetString(PyExc_TypeError,
-            "exec: arg 3 must be a mapping or None");
-        return -1;
-    }
-    if (PyDict_GetItemString(globals, "__builtins__") == NULL)
-        PyDict_SetItemString(globals, "__builtins__", f->f_builtins);
-    if (PyCode_Check(prog)) {
-        if (PyCode_GetNumFree((PyCodeObject *)prog) > 0) {
-            PyErr_SetString(PyExc_TypeError,
-        "code object passed to exec may not contain free variables");
-            return -1;
-        }
-        v = PyEval_EvalCode((PyCodeObject *) prog, globals, locals);
-    }
-    else if (PyFile_Check(prog)) {
-        FILE *fp = PyFile_AsFile(prog);
-        char *name = PyString_AsString(PyFile_Name(prog));
-        PyCompilerFlags cf;
-        if (name == NULL)
-            return -1;
-        cf.cf_flags = 0;
-        if (PyEval_MergeCompilerFlags(&cf))
-            v = PyRun_FileFlags(fp, name, Py_file_input, globals,
-                                locals, &cf);
-        else
-            v = PyRun_File(fp, name, Py_file_input, globals,
-                           locals);
-    }
-    else {
-        PyObject *tmp = NULL;
-        char *str;
-        PyCompilerFlags cf;
-        cf.cf_flags = 0;
-#ifdef Py_USING_UNICODE
-        if (PyUnicode_Check(prog)) {
-            tmp = PyUnicode_AsUTF8String(prog);
-            if (tmp == NULL)
-                return -1;
-            prog = tmp;
-            cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
-        }
-#endif
-        if (PyString_AsStringAndSize(prog, &str, NULL))
-            return -1;
-        if (PyEval_MergeCompilerFlags(&cf))
-            v = PyRun_StringFlags(str, Py_file_input, globals,
-                                  locals, &cf);
-        else
-            v = PyRun_String(str, Py_file_input, globals, locals);
-        Py_XDECREF(tmp);
-    }
-    if (plain)
-        PyFrame_LocalsToFast(f, 0);
-    if (v == NULL)
-        return -1;
-    Py_DECREF(v);
-    return 0;
-}
-
+//static int
+//exec_statement(PyFrameObject *f, PyObject *prog, PyObject *globals,
+//               PyObject *locals)
+//{
+//    int n;
+//    PyObject *v;
+//    int plain = 0;
+//
+//    if (PyTuple_Check(prog) && globals == Py_None && locals == Py_None &&
+//        ((n = PyTuple_Size(prog)) == 2 || n == 3)) {
+//        /* Backward compatibility hack */
+//        globals = PyTuple_GetItem(prog, 1);
+//        if (n == 3)
+//            locals = PyTuple_GetItem(prog, 2);
+//        prog = PyTuple_GetItem(prog, 0);
+//    }
+//    if (globals == Py_None) {
+//        globals = PyEval_GetGlobals();
+//        if (locals == Py_None) {
+//            locals = PyEval_GetLocals();
+//            plain = 1;
+//        }
+//        if (!globals || !locals) {
+//            PyErr_SetString(PyExc_SystemError,
+//                            "globals and locals cannot be NULL");
+//            return -1;
+//        }
+//    }
+//    else if (locals == Py_None)
+//        locals = globals;
+//    if (!PyString_Check(prog) &&
+//#ifdef Py_USING_UNICODE
+//        !PyUnicode_Check(prog) &&
+//#endif
+//        !PyCode_Check(prog) &&
+//        !PyFile_Check(prog)) {
+//        PyErr_SetString(PyExc_TypeError,
+//            "exec: arg 1 must be a string, file, or code object");
+//        return -1;
+//    }
+//    if (!PyDict_Check(globals)) {
+//        PyErr_SetString(PyExc_TypeError,
+//            "exec: arg 2 must be a dictionary or None");
+//        return -1;
+//    }
+//    if (!PyMapping_Check(locals)) {
+//        PyErr_SetString(PyExc_TypeError,
+//            "exec: arg 3 must be a mapping or None");
+//        return -1;
+//    }
+//    if (PyDict_GetItemString(globals, "__builtins__") == NULL)
+//        PyDict_SetItemString(globals, "__builtins__", f->f_builtins);
+//    if (PyCode_Check(prog)) {
+//        if (PyCode_GetNumFree((PyCodeObject *)prog) > 0) {
+//            PyErr_SetString(PyExc_TypeError,
+//        "code object passed to exec may not contain free variables");
+//            return -1;
+//        }
+//        v = PyEval_EvalCode((PyCodeObject *) prog, globals, locals);
+//    }
+//    else if (PyFile_Check(prog)) {
+//        FILE *fp = PyFile_AsFile(prog);
+//        char *name = PyString_AsString(PyFile_Name(prog));
+//        PyCompilerFlags cf;
+//        if (name == NULL)
+//            return -1;
+//        cf.cf_flags = 0;
+//        if (PyEval_MergeCompilerFlags(&cf))
+//            v = PyRun_FileFlags(fp, name, Py_file_input, globals,
+//                                locals, &cf);
+//        else
+//            v = PyRun_File(fp, name, Py_file_input, globals,
+//                           locals);
+//    }
+//    else {
+//        PyObject *tmp = NULL;
+//        char *str;
+//        PyCompilerFlags cf;
+//        cf.cf_flags = 0;
+//#ifdef Py_USING_UNICODE
+//        if (PyUnicode_Check(prog)) {
+//            tmp = PyUnicode_AsUTF8String(prog);
+//            if (tmp == NULL)
+//                return -1;
+//            prog = tmp;
+//            cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
+//        }
+//#endif
+//        if (PyString_AsStringAndSize(prog, &str, NULL))
+//            return -1;
+//        if (PyEval_MergeCompilerFlags(&cf))
+//            v = PyRun_StringFlags(str, Py_file_input, globals,
+//                                  locals, &cf);
+//        else
+//            v = PyRun_String(str, Py_file_input, globals, locals);
+//        Py_XDECREF(tmp);
+//    }
+//    if (plain)
+//        PyFrame_LocalsToFast(f, 0);
+//    if (v == NULL)
+//        return -1;
+//    Py_DECREF(v);
+//    return 0;
+//}
+//
 static void
 format_exc_check_arg(PyObject *exc, char *format_str, PyObject *obj)
 {

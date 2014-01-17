@@ -466,100 +466,101 @@ If coercion is not possible, raise TypeError.");
 static PyObject *
 builtin_compile(PyObject *self, PyObject *args, PyObject *kwds)
 {
-    char *str;
-    char *filename;
-    char *startstr;
-    int mode = -1;
-    int dont_inherit = 0;
-    int supplied_flags = 0;
-    int is_ast;
-    PyCompilerFlags cf;
-    PyObject *result = NULL, *cmd, *tmp = NULL;
-    Py_ssize_t length;
-    static char *kwlist[] = {"source", "filename", "mode", "flags",
-                             "dont_inherit", NULL};
-    int start[] = {Py_file_input, Py_eval_input, Py_single_input};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "Oss|ii:compile",
-                                     kwlist, &cmd, &filename, &startstr,
-                                     &supplied_flags, &dont_inherit))
-        return NULL;
-
-    cf.cf_flags = supplied_flags;
-
-    if (supplied_flags &
-        ~(PyCF_MASK | PyCF_MASK_OBSOLETE | PyCF_DONT_IMPLY_DEDENT | PyCF_ONLY_AST))
-    {
-        PyErr_SetString(PyExc_ValueError,
-                        "compile(): unrecognised flags");
-        return NULL;
-    }
-    /* XXX Warn if (supplied_flags & PyCF_MASK_OBSOLETE) != 0? */
-
-    if (!dont_inherit) {
-        PyEval_MergeCompilerFlags(&cf);
-    }
-
-    if (strcmp(startstr, "exec") == 0)
-        mode = 0;
-    else if (strcmp(startstr, "eval") == 0)
-        mode = 1;
-    else if (strcmp(startstr, "single") == 0)
-        mode = 2;
-    else {
-        PyErr_SetString(PyExc_ValueError,
-                        "compile() arg 3 must be 'exec', 'eval' or 'single'");
-        return NULL;
-    }
-
-    is_ast = PyAST_Check(cmd);
-    if (is_ast == -1)
-        return NULL;
-    if (is_ast) {
-        if (supplied_flags & PyCF_ONLY_AST) {
-            Py_INCREF(cmd);
-            result = cmd;
-        }
-        else {
-            PyArena *arena;
-            mod_ty mod;
-
-            arena = PyArena_New();
-            if (arena == NULL)
-                return NULL;
-            mod = PyAST_obj2mod(cmd, arena, mode);
-            if (mod == NULL) {
-                PyArena_Free(arena);
-                return NULL;
-            }
-            result = (PyObject*)PyAST_Compile(mod, filename,
-                                              &cf, arena);
-            PyArena_Free(arena);
-        }
-        return result;
-    }
-
-#ifdef Py_USING_UNICODE
-    if (PyUnicode_Check(cmd)) {
-        tmp = PyUnicode_AsUTF8String(cmd);
-        if (tmp == NULL)
-            return NULL;
-        cmd = tmp;
-        cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
-    }
-#endif
-
-    if (PyObject_AsReadBuffer(cmd, (const void **)&str, &length))
-        goto cleanup;
-    if ((size_t)length != strlen(str)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "compile() expected string without null bytes");
-        goto cleanup;
-    }
-    result = Py_CompileStringFlags(str, filename, start[mode], &cf);
-cleanup:
-    Py_XDECREF(tmp);
-    return result;
+//    char *str;
+//    char *filename;
+//    char *startstr;
+//    int mode = -1;
+//    int dont_inherit = 0;
+//    int supplied_flags = 0;
+//    int is_ast;
+//    PyCompilerFlags cf;
+//    PyObject *result = NULL, *cmd, *tmp = NULL;
+//    Py_ssize_t length;
+//    static char *kwlist[] = {"source", "filename", "mode", "flags",
+//                             "dont_inherit", NULL};
+//    int start[] = {Py_file_input, Py_eval_input, Py_single_input};
+//
+//    if (!PyArg_ParseTupleAndKeywords(args, kwds, "Oss|ii:compile",
+//                                     kwlist, &cmd, &filename, &startstr,
+//                                     &supplied_flags, &dont_inherit))
+//        return NULL;
+//
+//    cf.cf_flags = supplied_flags;
+//
+//    if (supplied_flags &
+//        ~(PyCF_MASK | PyCF_MASK_OBSOLETE | PyCF_DONT_IMPLY_DEDENT | PyCF_ONLY_AST))
+//    {
+//        PyErr_SetString(PyExc_ValueError,
+//                        "compile(): unrecognised flags");
+//        return NULL;
+//    }
+//    /* XXX Warn if (supplied_flags & PyCF_MASK_OBSOLETE) != 0? */
+//
+//    if (!dont_inherit) {
+//        PyEval_MergeCompilerFlags(&cf);
+//    }
+//
+//    if (strcmp(startstr, "exec") == 0)
+//        mode = 0;
+//    else if (strcmp(startstr, "eval") == 0)
+//        mode = 1;
+//    else if (strcmp(startstr, "single") == 0)
+//        mode = 2;
+//    else {
+//        PyErr_SetString(PyExc_ValueError,
+//                        "compile() arg 3 must be 'exec', 'eval' or 'single'");
+//        return NULL;
+//    }
+//
+//    is_ast = PyAST_Check(cmd);
+//    if (is_ast == -1)
+//        return NULL;
+//    if (is_ast) {
+//        if (supplied_flags & PyCF_ONLY_AST) {
+//            Py_INCREF(cmd);
+//            result = cmd;
+//        }
+//        else {
+//            PyArena *arena;
+//            mod_ty mod;
+//
+//            arena = PyArena_New();
+//            if (arena == NULL)
+//                return NULL;
+//            mod = PyAST_obj2mod(cmd, arena, mode);
+//            if (mod == NULL) {
+//                PyArena_Free(arena);
+//                return NULL;
+//            }
+//            result = (PyObject*)PyAST_Compile(mod, filename,
+//                                              &cf, arena);
+//            PyArena_Free(arena);
+//        }
+//        return result;
+//    }
+//
+//#ifdef Py_USING_UNICODE
+//    if (PyUnicode_Check(cmd)) {
+//        tmp = PyUnicode_AsUTF8String(cmd);
+//        if (tmp == NULL)
+//            return NULL;
+//        cmd = tmp;
+//        cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
+//    }
+//#endif
+//
+//    if (PyObject_AsReadBuffer(cmd, (const void **)&str, &length))
+//        goto cleanup;
+//    if ((size_t)length != strlen(str)) {
+//        PyErr_SetString(PyExc_TypeError,
+//                        "compile() expected string without null bytes");
+//        goto cleanup;
+//    }
+//    result = Py_CompileStringFlags(str, filename, start[mode], &cf);
+//cleanup:
+//    Py_XDECREF(tmp);
+//    return result;
+return NULL;
 }
 
 PyDoc_STRVAR(compile_doc,
@@ -620,81 +621,82 @@ Return the tuple ((x-x%y)/y, x%y).  Invariant: div*y + mod == x.");
 static PyObject *
 builtin_eval(PyObject *self, PyObject *args)
 {
-    PyObject *cmd, *result, *tmp = NULL;
-    PyObject *globals = Py_None, *locals = Py_None;
-    char *str;
-    PyCompilerFlags cf;
-
-    if (!PyArg_UnpackTuple(args, "eval", 1, 3, &cmd, &globals, &locals))
-        return NULL;
-    if (locals != Py_None && !PyMapping_Check(locals)) {
-        PyErr_SetString(PyExc_TypeError, "locals must be a mapping");
-        return NULL;
-    }
-    if (globals != Py_None && !PyDict_Check(globals)) {
-        PyErr_SetString(PyExc_TypeError, PyMapping_Check(globals) ?
-            "globals must be a real dict; try eval(expr, {}, mapping)"
-            : "globals must be a dict");
-        return NULL;
-    }
-    if (globals == Py_None) {
-        globals = PyEval_GetGlobals();
-        if (locals == Py_None)
-            locals = PyEval_GetLocals();
-    }
-    else if (locals == Py_None)
-        locals = globals;
-
-    if (globals == NULL || locals == NULL) {
-        PyErr_SetString(PyExc_TypeError,
-            "eval must be given globals and locals "
-            "when called without a frame");
-        return NULL;
-    }
-
-    if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
-        if (PyDict_SetItemString(globals, "__builtins__",
-                                 PyEval_GetBuiltins()) != 0)
-            return NULL;
-    }
-
-    if (PyCode_Check(cmd)) {
-        if (PyCode_GetNumFree((PyCodeObject *)cmd) > 0) {
-            PyErr_SetString(PyExc_TypeError,
-        "code object passed to eval() may not contain free variables");
-            return NULL;
-        }
-        return PyEval_EvalCode((PyCodeObject *) cmd, globals, locals);
-    }
-
-    if (!PyString_Check(cmd) &&
-        !PyUnicode_Check(cmd)) {
-        PyErr_SetString(PyExc_TypeError,
-                   "eval() arg 1 must be a string or code object");
-        return NULL;
-    }
-    cf.cf_flags = 0;
-
-#ifdef Py_USING_UNICODE
-    if (PyUnicode_Check(cmd)) {
-        tmp = PyUnicode_AsUTF8String(cmd);
-        if (tmp == NULL)
-            return NULL;
-        cmd = tmp;
-        cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
-    }
-#endif
-    if (PyString_AsStringAndSize(cmd, &str, NULL)) {
-        Py_XDECREF(tmp);
-        return NULL;
-    }
-    while (*str == ' ' || *str == '\t')
-        str++;
-
-    (void)PyEval_MergeCompilerFlags(&cf);
-    result = PyRun_StringFlags(str, Py_eval_input, globals, locals, &cf);
-    Py_XDECREF(tmp);
-    return result;
+return NULL;
+//    PyObject *cmd, *result, *tmp = NULL;
+//    PyObject *globals = Py_None, *locals = Py_None;
+//    char *str;
+//    PyCompilerFlags cf;
+//
+//    if (!PyArg_UnpackTuple(args, "eval", 1, 3, &cmd, &globals, &locals))
+//        return NULL;
+//    if (locals != Py_None && !PyMapping_Check(locals)) {
+//        PyErr_SetString(PyExc_TypeError, "locals must be a mapping");
+//        return NULL;
+//    }
+//    if (globals != Py_None && !PyDict_Check(globals)) {
+//        PyErr_SetString(PyExc_TypeError, PyMapping_Check(globals) ?
+//            "globals must be a real dict; try eval(expr, {}, mapping)"
+//            : "globals must be a dict");
+//        return NULL;
+//    }
+//    if (globals == Py_None) {
+//        globals = PyEval_GetGlobals();
+//        if (locals == Py_None)
+//            locals = PyEval_GetLocals();
+//    }
+//    else if (locals == Py_None)
+//        locals = globals;
+//
+//    if (globals == NULL || locals == NULL) {
+//        PyErr_SetString(PyExc_TypeError,
+//            "eval must be given globals and locals "
+//            "when called without a frame");
+//        return NULL;
+//    }
+//
+//    if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
+//        if (PyDict_SetItemString(globals, "__builtins__",
+//                                 PyEval_GetBuiltins()) != 0)
+//            return NULL;
+//    }
+//
+//    if (PyCode_Check(cmd)) {
+//        if (PyCode_GetNumFree((PyCodeObject *)cmd) > 0) {
+//            PyErr_SetString(PyExc_TypeError,
+//        "code object passed to eval() may not contain free variables");
+//            return NULL;
+//        }
+//        return PyEval_EvalCode((PyCodeObject *) cmd, globals, locals);
+//    }
+//
+//    if (!PyString_Check(cmd) &&
+//        !PyUnicode_Check(cmd)) {
+//        PyErr_SetString(PyExc_TypeError,
+//                   "eval() arg 1 must be a string or code object");
+//        return NULL;
+//    }
+//    cf.cf_flags = 0;
+//
+//#ifdef Py_USING_UNICODE
+//    if (PyUnicode_Check(cmd)) {
+//        tmp = PyUnicode_AsUTF8String(cmd);
+//        if (tmp == NULL)
+//            return NULL;
+//        cmd = tmp;
+//        cf.cf_flags |= PyCF_SOURCE_IS_UTF8;
+//    }
+//#endif
+//    if (PyString_AsStringAndSize(cmd, &str, NULL)) {
+//        Py_XDECREF(tmp);
+//        return NULL;
+//    }
+//    while (*str == ' ' || *str == '\t')
+//        str++;
+//
+//    (void)PyEval_MergeCompilerFlags(&cf);
+//    result = PyRun_StringFlags(str, Py_eval_input, globals, locals, &cf);
+//    Py_XDECREF(tmp);
+//    return result;
 }
 
 PyDoc_STRVAR(eval_doc,
@@ -711,98 +713,99 @@ If only globals is given, locals defaults to it.\n");
 static PyObject *
 builtin_execfile(PyObject *self, PyObject *args)
 {
-    char *filename;
-    PyObject *globals = Py_None, *locals = Py_None;
-    PyObject *res;
-    FILE* fp = NULL;
-    PyCompilerFlags cf;
-    int exists;
-
-    if (PyErr_WarnPy3k("execfile() not supported in 3.x; use exec()",
-                       1) < 0)
-        return NULL;
-
-    if (!PyArg_ParseTuple(args, "s|O!O:execfile",
-                    &filename,
-                    &PyDict_Type, &globals,
-                    &locals))
-        return NULL;
-    if (locals != Py_None && !PyMapping_Check(locals)) {
-        PyErr_SetString(PyExc_TypeError, "locals must be a mapping");
-        return NULL;
-    }
-    if (globals == Py_None) {
-        globals = PyEval_GetGlobals();
-        if (locals == Py_None)
-            locals = PyEval_GetLocals();
-    }
-    else if (locals == Py_None)
-        locals = globals;
-    if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
-        if (PyDict_SetItemString(globals, "__builtins__",
-                                 PyEval_GetBuiltins()) != 0)
-            return NULL;
-    }
-
-    exists = 0;
-    /* Test for existence or directory. */
-#if defined(PLAN9)
-    {
-        Dir *d;
-
-        if ((d = dirstat(filename))!=nil) {
-            if(d->mode & DMDIR)
-                werrstr("is a directory");
-            else
-                exists = 1;
-            free(d);
-        }
-    }
-#elif defined(RISCOS)
-    if (object_exists(filename)) {
-        if (isdir(filename))
-            errno = EISDIR;
-        else
-            exists = 1;
-    }
-#else   /* standard Posix */
-    {
-        struct stat s;
-        if (stat(filename, &s) == 0) {
-            if (S_ISDIR(s.st_mode))
-#                               if defined(PYOS_OS2) && defined(PYCC_VACPP)
-                            errno = EOS2ERR;
-#                               else
-                            errno = EISDIR;
-#                               endif
-            else
-                exists = 1;
-        }
-    }
-#endif
-
-    if (exists) {
-        Py_BEGIN_ALLOW_THREADS
-        fp = fopen(filename, "r" PY_STDIOTEXTMODE);
-        Py_END_ALLOW_THREADS
-
-        if (fp == NULL) {
-            exists = 0;
-        }
-    }
-
-    if (!exists) {
-        PyErr_SetFromErrnoWithFilename(PyExc_IOError, filename);
-        return NULL;
-    }
-    cf.cf_flags = 0;
-    if (PyEval_MergeCompilerFlags(&cf))
-        res = PyRun_FileExFlags(fp, filename, Py_file_input, globals,
-                           locals, 1, &cf);
-    else
-        res = PyRun_FileEx(fp, filename, Py_file_input, globals,
-                           locals, 1);
-    return res;
+return NULL;
+//    char *filename;
+//    PyObject *globals = Py_None, *locals = Py_None;
+//    PyObject *res;
+//    FILE* fp = NULL;
+//    PyCompilerFlags cf;
+//    int exists;
+//
+//    if (PyErr_WarnPy3k("execfile() not supported in 3.x; use exec()",
+//                       1) < 0)
+//        return NULL;
+//
+//    if (!PyArg_ParseTuple(args, "s|O!O:execfile",
+//                    &filename,
+//                    &PyDict_Type, &globals,
+//                    &locals))
+//        return NULL;
+//    if (locals != Py_None && !PyMapping_Check(locals)) {
+//        PyErr_SetString(PyExc_TypeError, "locals must be a mapping");
+//        return NULL;
+//    }
+//    if (globals == Py_None) {
+//        globals = PyEval_GetGlobals();
+//        if (locals == Py_None)
+//            locals = PyEval_GetLocals();
+//    }
+//    else if (locals == Py_None)
+//        locals = globals;
+//    if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
+//        if (PyDict_SetItemString(globals, "__builtins__",
+//                                 PyEval_GetBuiltins()) != 0)
+//            return NULL;
+//    }
+//
+//    exists = 0;
+//    /* Test for existence or directory. */
+//#if defined(PLAN9)
+//    {
+//        Dir *d;
+//
+//        if ((d = dirstat(filename))!=nil) {
+//            if(d->mode & DMDIR)
+//                werrstr("is a directory");
+//            else
+//                exists = 1;
+//            free(d);
+//        }
+//    }
+//#elif defined(RISCOS)
+//    if (object_exists(filename)) {
+//        if (isdir(filename))
+//            errno = EISDIR;
+//        else
+//            exists = 1;
+//    }
+//#else   /* standard Posix */
+//    {
+//        struct stat s;
+//        if (stat(filename, &s) == 0) {
+//            if (S_ISDIR(s.st_mode))
+//#                               if defined(PYOS_OS2) && defined(PYCC_VACPP)
+//                            errno = EOS2ERR;
+//#                               else
+//                            errno = EISDIR;
+//#                               endif
+//            else
+//                exists = 1;
+//        }
+//    }
+//#endif
+//
+//    if (exists) {
+//        Py_BEGIN_ALLOW_THREADS
+//        fp = fopen(filename, "r" PY_STDIOTEXTMODE);
+//        Py_END_ALLOW_THREADS
+//
+//        if (fp == NULL) {
+//            exists = 0;
+//        }
+//    }
+//
+//    if (!exists) {
+//        PyErr_SetFromErrnoWithFilename(PyExc_IOError, filename);
+//        return NULL;
+//    }
+//    cf.cf_flags = 0;
+//    if (PyEval_MergeCompilerFlags(&cf))
+//        res = PyRun_FileExFlags(fp, filename, Py_file_input, globals,
+//                           locals, 1, &cf);
+//    else
+//        res = PyRun_FileEx(fp, filename, Py_file_input, globals,
+//                           locals, 1);
+//    return res;
 }
 
 PyDoc_STRVAR(execfile_doc,
@@ -2019,75 +2022,76 @@ These are exactly the valid indices for a list of 4 elements.");
 static PyObject *
 builtin_raw_input(PyObject *self, PyObject *args)
 {
-    PyObject *v = NULL;
-    PyObject *fin = PySys_GetObject("stdin");
-    PyObject *fout = PySys_GetObject("stdout");
-
-    if (!PyArg_UnpackTuple(args, "[raw_]input", 0, 1, &v))
-        return NULL;
-
-    if (fin == NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "[raw_]input: lost sys.stdin");
-        return NULL;
-    }
-    if (fout == NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "[raw_]input: lost sys.stdout");
-        return NULL;
-    }
-    if (PyFile_SoftSpace(fout, 0)) {
-        if (PyFile_WriteString(" ", fout) != 0)
-            return NULL;
-    }
-    if (PyFile_AsFile(fin) && PyFile_AsFile(fout)
-        && isatty(fileno(PyFile_AsFile(fin)))
-        && isatty(fileno(PyFile_AsFile(fout)))) {
-        PyObject *po;
-        char *prompt;
-        char *s;
-        PyObject *result;
-        if (v != NULL) {
-            po = PyObject_Str(v);
-            if (po == NULL)
-                return NULL;
-            prompt = PyString_AsString(po);
-            if (prompt == NULL)
-                return NULL;
-        }
-        else {
-            po = NULL;
-            prompt = "";
-        }
-        s = PyOS_Readline(PyFile_AsFile(fin), PyFile_AsFile(fout),
-                          prompt);
-        Py_XDECREF(po);
-        if (s == NULL) {
-            if (!PyErr_Occurred())
-                PyErr_SetNone(PyExc_KeyboardInterrupt);
-            return NULL;
-        }
-        if (*s == '\0') {
-            PyErr_SetNone(PyExc_EOFError);
-            result = NULL;
-        }
-        else { /* strip trailing '\n' */
-            size_t len = strlen(s);
-            if (len > PY_SSIZE_T_MAX) {
-                PyErr_SetString(PyExc_OverflowError,
-                                "[raw_]input: input too long");
-                result = NULL;
-            }
-            else {
-                result = PyString_FromStringAndSize(s, len-1);
-            }
-        }
-        PyMem_FREE(s);
-        return result;
-    }
-    if (v != NULL) {
-        if (PyFile_WriteObject(v, fout, Py_PRINT_RAW) != 0)
-            return NULL;
-    }
-    return PyFile_GetLine(fin, -1);
+return NULL;
+//    PyObject *v = NULL;
+//    PyObject *fin = PySys_GetObject("stdin");
+//    PyObject *fout = PySys_GetObject("stdout");
+//
+//    if (!PyArg_UnpackTuple(args, "[raw_]input", 0, 1, &v))
+//        return NULL;
+//
+//    if (fin == NULL) {
+//        PyErr_SetString(PyExc_RuntimeError, "[raw_]input: lost sys.stdin");
+//        return NULL;
+//    }
+//    if (fout == NULL) {
+//        PyErr_SetString(PyExc_RuntimeError, "[raw_]input: lost sys.stdout");
+//        return NULL;
+//    }
+//    if (PyFile_SoftSpace(fout, 0)) {
+//        if (PyFile_WriteString(" ", fout) != 0)
+//            return NULL;
+//    }
+//    if (PyFile_AsFile(fin) && PyFile_AsFile(fout)
+//        && isatty(fileno(PyFile_AsFile(fin)))
+//        && isatty(fileno(PyFile_AsFile(fout)))) {
+//        PyObject *po;
+//        char *prompt;
+//        char *s;
+//        PyObject *result;
+//        if (v != NULL) {
+//            po = PyObject_Str(v);
+//            if (po == NULL)
+//                return NULL;
+//            prompt = PyString_AsString(po);
+//            if (prompt == NULL)
+//                return NULL;
+//        }
+//        else {
+//            po = NULL;
+//            prompt = "";
+//        }
+//        s = PyOS_Readline(PyFile_AsFile(fin), PyFile_AsFile(fout),
+//                          prompt);
+//        Py_XDECREF(po);
+//        if (s == NULL) {
+//            if (!PyErr_Occurred())
+//                PyErr_SetNone(PyExc_KeyboardInterrupt);
+//            return NULL;
+//        }
+//        if (*s == '\0') {
+//            PyErr_SetNone(PyExc_EOFError);
+//            result = NULL;
+//        }
+//        else { /* strip trailing '\n' */
+//            size_t len = strlen(s);
+//            if (len > PY_SSIZE_T_MAX) {
+//                PyErr_SetString(PyExc_OverflowError,
+//                                "[raw_]input: input too long");
+//                result = NULL;
+//            }
+//            else {
+//                result = PyString_FromStringAndSize(s, len-1);
+//            }
+//        }
+//        PyMem_FREE(s);
+//        return result;
+//    }
+//    if (v != NULL) {
+//        if (PyFile_WriteObject(v, fout, Py_PRINT_RAW) != 0)
+//            return NULL;
+//    }
+//    return PyFile_GetLine(fin, -1);
 }
 
 PyDoc_STRVAR(raw_input_doc,
