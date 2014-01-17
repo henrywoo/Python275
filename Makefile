@@ -69,7 +69,8 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 # Compiler options
 OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
 BASECFLAGS=	 -fno-strict-aliasing
-CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS)
+#fuheng - strip
+CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS)
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
@@ -227,6 +228,7 @@ MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
 		Modules/main.o \
+		Modules/main2.o \
 		Modules/gcmodule.o
 
 # Used of signalmodule.o is not available
