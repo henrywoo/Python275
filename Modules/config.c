@@ -32,8 +32,20 @@ extern void init_sre(void);
 extern void init_codecs(void);
 extern void init_weakref(void);
 extern void initzipimport(void);
-//extern void init_symtable(void);
-extern void initxxsubtype(void);
+extern void initarray(void);
+extern void initmath(void);
+extern void init_struct(void);
+extern void inittime(void);
+extern void init_random(void);
+extern void init_heapq(void);
+extern void initstrop(void);
+extern void initdatetime(void);
+extern void initselect(void);
+extern void init_socket(void);
+extern void init_md5(void);
+extern void init_sha(void);
+extern void init_sha256(void);
+extern void init_sha512(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -54,9 +66,20 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_codecs", init_codecs},
 	{"_weakref", init_weakref},
 	{"zipimport", initzipimport},
-	//{"_symtable", init_symtable},
-	{"_symtable", NULL},
-	{"xxsubtype", initxxsubtype},
+	{"array", initarray},
+	{"math", initmath},
+	{"_struct", init_struct},
+	{"time", inittime},
+	{"_random", init_random},
+	{"_heapq", init_heapq},
+	{"strop", initstrop},
+	{"datetime", initdatetime},
+	{"select", initselect},
+	{"_socket", init_socket},
+	{"_md5", init_md5},
+	{"_sha", init_sha},
+	{"_sha256", init_sha256},
+	{"_sha512", init_sha512},
 
 /* -- ADDMODULE MARKER 2 -- */
 
@@ -67,7 +90,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"imp", initimp},
 
     /* This lives in Python/Python-ast.c */
-    {"_ast", NULL},
     //{"_ast", init_ast},
 
     /* These entries are here for sys.builtin_module_names */

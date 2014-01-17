@@ -717,16 +717,16 @@ initmain(void)
 static void
 initsite(void)
 {
-    PyObject *m;
-    m = PyImport_ImportModule("site");
-    if (m == NULL) {
-        PyErr_Print();
-        Py_Finalize();
-        exit(1);
-    }
-    else {
-        Py_DECREF(m);
-    }
+//    PyObject *m;
+//    m = PyImport_ImportModule("site");
+//    if (m == NULL) {
+//        PyErr_Print();
+//        Py_Finalize();
+//        exit(1);
+//    }
+//    else {
+//        Py_DECREF(m);
+//    }
 }
 
 /* Parse input from a file and execute it */

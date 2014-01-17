@@ -1504,12 +1504,12 @@ find_module(char *fullname, char *subname, PyObject *path, char *buf,
             filemode = fdp->mode;
             if (filemode[0] == 'U')
                 filemode = "r" PY_STDIOTEXTMODE;
-    int sz=strlen(buf);
-    if(strcmp(buf+sz-3,".py")==0){
-      buf[sz]='o';
-      buf[sz+1]='\0';
-    }
-            printf("%s buf:%s\n",__func__,buf);
+            int sz=strlen(buf);
+            if(strcmp(buf+sz-3,".py")==0){
+              buf[sz]='o';
+              buf[sz+1]='\0';
+            }
+            //printf("%s buf:%s\n",__func__,buf);
             fp = fopen(buf, filemode);
             if (fp != NULL) {
                 if (case_ok(buf, len, namelen, name))
@@ -1875,7 +1875,7 @@ load_module(char *name, FILE *fp, char *pathname, int type, PyObject *loader)
 
     case C_BUILTIN:
     case PY_FROZEN:
-        printf("PY_FROZEN: %s path:%s name:%s\n",__func__,pathname, name);
+        //printf("PY_FROZEN: %s path:%s name:%s\n",__func__,pathname, name);
         if (pathname != NULL && pathname[0] != '\0')
             name = pathname;
         if (type == C_BUILTIN)

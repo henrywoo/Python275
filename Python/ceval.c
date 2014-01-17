@@ -1872,7 +1872,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
             goto fast_yield;
 
         // fuheng
-        //case EXEC_STMT:
+        case EXEC_STMT:
         //    w = TOP();
         //    v = SECOND();
         //    u = THIRD();
@@ -1883,7 +1883,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
         //    Py_DECREF(u);
         //    Py_DECREF(v);
         //    Py_DECREF(w);
-        //    break;
+            break;
 
         case POP_BLOCK:
             {

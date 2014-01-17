@@ -21,7 +21,7 @@
 
 # === Variables set by makesetup ===
 
-MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/symtablemodule.o  Modules/xxsubtype.o
+MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/_randommodule.o  Modules/_heapqmodule.o  Modules/stropmodule.o  Modules/datetimemodule.o  Modules/selectmodule.o  Modules/socketmodule.o Modules/timemodule.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o
 MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 
 # === Variables set by configure
@@ -67,10 +67,10 @@ MKDIR_P=	/bin/mkdir -p
 MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
-OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
+OPT=		-DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes
 BASECFLAGS=	 -fno-strict-aliasing
 #fuheng - strip
-CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS) -s
+CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS) -s
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
@@ -192,7 +192,7 @@ LIBOBJS=
 UNICODE_OBJS=   Objects/unicodeobject.o Objects/unicodectype.o
 
 PYTHON=		python$(EXE)
-#BUILDPYTHON=	python$(BUILDEXE)
+BUILDPYTHON=	python$(BUILDEXE)
 BUILDPVM=	pvm$(BUILDEXE)
 
 PYTHON_FOR_BUILD=./$(BUILDPYTHON) -E
@@ -205,7 +205,7 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 
 # === Definitions added by makesetup ===
 
-LOCALMODLIBS=           
+LOCALMODLIBS=                       
 BASEMODLIBS=
 GLHACK=-Dclear=__GLclear
 PYTHONPATH=$(COREPYTHONPATH)
@@ -227,9 +227,9 @@ DESTLIB=$(LIBDEST)
 MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
-		Modules/main.o \
 		Modules/main2.o \
-		Modules/gcmodule.o
+		Modules/gcmodule.o \
+#		Modules/main.o \
 
 # Used of signalmodule.o is not available
 SIGNAL_OBJS=	
@@ -246,36 +246,35 @@ LIBFFI_INCLUDEDIR=
 
 ##########################################################################
 # Parser
-#PGEN=		Parser/pgen$(EXE)
-#
-#PSRCS=		\
-#		Parser/acceler.c \
-#		Parser/grammar1.c \
-#		Parser/listnode.c \
-#		Parser/node.c \
-#		Parser/parser.c \
-#		Parser/parsetok.c \
-#		Parser/bitset.c \
-#		Parser/metagrammar.c \
-#		Parser/firstsets.c \
-#		Parser/grammar.c \
-#		Parser/pgen.c
-#
-#POBJS=		\
-#		Parser/acceler.o \
-#		Parser/grammar1.o \
-#		Parser/listnode.o \
-#		Parser/node.o \
-#		Parser/parser.o \
-#		Parser/parsetok.o \
-#		Parser/bitset.o \
-#		Parser/metagrammar.o \
-#		Parser/firstsets.o \
-#		Parser/grammar.o \
-#		Parser/pgen.o
-#
-#PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
-PARSER_OBJS=	
+PGEN=		Parser/pgen$(EXE)
+
+PSRCS=		\
+		Parser/acceler.c \
+		Parser/grammar1.c \
+		Parser/listnode.c \
+		Parser/node.c \
+		Parser/parser.c \
+		Parser/parsetok.c \
+		Parser/bitset.c \
+		Parser/metagrammar.c \
+		Parser/firstsets.c \
+		Parser/grammar.c \
+		Parser/pgen.c
+
+POBJS=		\
+		Parser/acceler.o \
+		Parser/grammar1.o \
+		Parser/listnode.o \
+		Parser/node.o \
+		Parser/parser.o \
+		Parser/parsetok.o \
+		Parser/bitset.o \
+		Parser/metagrammar.o \
+		Parser/firstsets.o \
+		Parser/grammar.o \
+		Parser/pgen.o
+
+PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
 
 PGSRCS=		\
 		Objects/obmalloc.c \
@@ -301,34 +300,30 @@ PGENSRCS=	$(PSRCS) $(PGSRCS)
 PGENOBJS=	$(POBJS) $(PGOBJS)
 
 ##########################################################################
-## AST
-#AST_H_DIR=	Include
-#AST_H=		$(AST_H_DIR)/Python-ast.h
-#AST_C_DIR=	Python
-#AST_C=		$(AST_C_DIR)/Python-ast.c
-#AST_ASDL=	$(srcdir)/Parser/Python.asdl
-#
-#ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
-## XXX Note that a build now requires Python exist before the build starts
-#ASDLGEN=	$(srcdir)/Parser/asdl_c.py
-#
+# AST
+AST_H_DIR=	Include
+AST_H=		$(AST_H_DIR)/Python-ast.h
+AST_C_DIR=	Python
+AST_C=		$(AST_C_DIR)/Python-ast.c
+AST_ASDL=	$(srcdir)/Parser/Python.asdl
+
+ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
+# XXX Note that a build now requires Python exist before the build starts
+ASDLGEN=	$(srcdir)/Parser/asdl_c.py
+
 ##########################################################################
 # Python
 PYTHON_OBJS=	\
 		Python/_warnings.o \
-		Python/bltinmodule.o \
-		Python/ceval.o \
 		Python/codecs.o \
 		Python/errors.o \
 		Python/frozen.o \
 		Python/frozenmain.o \
 		Python/future.o \
 		Python/getargs.o \
-		Python/getcompiler.o \
 		Python/getcopyright.o \
 		Python/getplatform.o \
 		Python/getversion.o \
-		Python/graminit.o \
 		Python/import.o \
 		Python/importdl.o \
 		Python/marshal.o \
@@ -344,6 +339,7 @@ PYTHON_OBJS=	\
 		Python/pythonrun.o \
 		Python/random.o \
 		Python/structmember.o \
+		Python/symtable.o \
 		Python/sysmodule.o \
 		Python/traceback.o \
 		Python/getopt.o \
@@ -356,11 +352,14 @@ PYTHON_OBJS=	\
 		$(LIBOBJS) \
 		$(MACHDEP_OBJS) \
 		$(THREADOBJ) \
-#		Python/compile.o \
-#		Python/symtable.o \
+		Python/bltinmodule.o \
+		Python/ceval.o \
+		Python/getcompiler.o \
 #		Python/Python-ast.o \
+#		Python/graminit.o \
 #		Python/asdl.o \
 #		Python/ast.o \
+#		Python/compile.o \
 
 
 ##########################################################################
@@ -423,7 +422,7 @@ LIBRARY_OBJS=	\
 # Default target
 all:		build_all
 #build_all:	$(BUILDPYTHON) $(BUILDPVM) oldsharedmods sharedmods gdbhooks
-build_all:	$(BUILDPVM)
+build_all:	$(BUILDPVM) oldsharedmods sharedmods gdbhooks
 
 # Compile a binary with gcc profile guided optimization.
 profile-opt:
@@ -648,7 +647,7 @@ $(AST_C): $(AST_ASDL) $(ASDLGEN_FILES)
 	$(MKDIR_P) $(AST_C_DIR)
 	$(ASDLGEN) -c $(AST_C_DIR) $(AST_ASDL)
 
-Python/compile.o Python/symtable.o Python/ast.o: $(GRAMMAR_H) $(AST_H)
+#Python/compile.o Python/symtable.o Python/ast.o: $(GRAMMAR_H) $(AST_H)
 
 Python/getplatform.o: $(srcdir)/Python/getplatform.c
 		$(CC) -c $(PY_CFLAGS) -DPLATFORM='"$(MACHDEP)"' -o $@ $(srcdir)/Python/getplatform.c
@@ -1405,7 +1404,34 @@ Modules/_weakref.o: $(srcdir)/Modules/_weakref.c; $(CC) $(PY_CFLAGS)  -c $(srcdi
 Modules/_weakref$(SO):  Modules/_weakref.o; $(BLDSHARED)  Modules/_weakref.o   -o Modules/_weakref$(SO)
 Modules/zipimport.o: $(srcdir)/Modules/zipimport.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/zipimport.c -o Modules/zipimport.o
 Modules/zipimport$(SO):  Modules/zipimport.o; $(BLDSHARED)  Modules/zipimport.o   -o Modules/zipimport$(SO)
-Modules/symtablemodule.o: $(srcdir)/Modules/symtablemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/symtablemodule.c -o Modules/symtablemodule.o
-Modules/_symtablemodule$(SO):  Modules/symtablemodule.o; $(BLDSHARED)  Modules/symtablemodule.o   -o Modules/_symtablemodule$(SO)
-Modules/xxsubtype.o: $(srcdir)/Modules/xxsubtype.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/xxsubtype.c -o Modules/xxsubtype.o
-Modules/xxsubtype$(SO):  Modules/xxsubtype.o; $(BLDSHARED)  Modules/xxsubtype.o   -o Modules/xxsubtype$(SO)
+Modules/arraymodule.o: $(srcdir)/Modules/arraymodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/arraymodule.c -o Modules/arraymodule.o
+Modules/arraymodule$(SO):  Modules/arraymodule.o; $(BLDSHARED)  Modules/arraymodule.o   -o Modules/arraymodule$(SO)
+Modules/mathmodule.o: $(srcdir)/Modules/mathmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/mathmodule.c -o Modules/mathmodule.o
+Modules/_math.o: $(srcdir)/Modules/_math.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_math.c -o Modules/_math.o
+Modules/math$(SO):  Modules/mathmodule.o Modules/_math.o; $(BLDSHARED)  Modules/mathmodule.o Modules/_math.o   -o Modules/math$(SO)
+Modules/_struct.o: $(srcdir)/Modules/_struct.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_struct.c -o Modules/_struct.o
+Modules/_struct$(SO):  Modules/_struct.o; $(BLDSHARED)  Modules/_struct.o   -o Modules/_struct$(SO)
+Modules/timemodule.o: $(srcdir)/Modules/timemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/timemodule.c -o Modules/timemodule.o
+Modules/timemodule$(SO):  Modules/timemodule.o; $(BLDSHARED)  Modules/timemodule.o   -o Modules/timemodule$(SO)
+Modules/_randommodule.o: $(srcdir)/Modules/_randommodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_randommodule.c -o Modules/_randommodule.o
+Modules/_randommodule$(SO):  Modules/_randommodule.o; $(BLDSHARED)  Modules/_randommodule.o   -o Modules/_randommodule$(SO)
+Modules/_heapqmodule.o: $(srcdir)/Modules/_heapqmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_heapqmodule.c -o Modules/_heapqmodule.o
+Modules/_heapqmodule$(SO):  Modules/_heapqmodule.o; $(BLDSHARED)  Modules/_heapqmodule.o   -o Modules/_heapqmodule$(SO)
+Modules/stropmodule.o: $(srcdir)/Modules/stropmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/stropmodule.c -o Modules/stropmodule.o
+Modules/stropmodule$(SO):  Modules/stropmodule.o; $(BLDSHARED)  Modules/stropmodule.o   -o Modules/stropmodule$(SO)
+Modules/datetimemodule.o: $(srcdir)/Modules/datetimemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/datetimemodule.c -o Modules/datetimemodule.o
+Modules/datetimemodule$(SO):  Modules/datetimemodule.o; $(BLDSHARED)  Modules/datetimemodule.o   -o Modules/datetimemodule$(SO)
+Modules/selectmodule.o: $(srcdir)/Modules/selectmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/selectmodule.c -o Modules/selectmodule.o
+Modules/selectmodule$(SO):  Modules/selectmodule.o; $(BLDSHARED)  Modules/selectmodule.o   -o Modules/selectmodule$(SO)
+Modules/socketmodule.o: $(srcdir)/Modules/socketmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/socketmodule.c -o Modules/socketmodule.o
+Modules/timemodule.o: $(srcdir)/Modules/timemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/timemodule.c -o Modules/timemodule.o
+Modules/_socketmodule$(SO):  Modules/socketmodule.o Modules/timemodule.o; $(BLDSHARED)  Modules/socketmodule.o Modules/timemodule.o   -o Modules/_socketmodule$(SO)
+Modules/md5module.o: $(srcdir)/Modules/md5module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/md5module.c -o Modules/md5module.o
+Modules/md5.o: $(srcdir)/Modules/md5.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/md5.c -o Modules/md5.o
+Modules/_md5module$(SO):  Modules/md5module.o Modules/md5.o; $(BLDSHARED)  Modules/md5module.o Modules/md5.o   -o Modules/_md5module$(SO)
+Modules/shamodule.o: $(srcdir)/Modules/shamodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/shamodule.c -o Modules/shamodule.o
+Modules/_shamodule$(SO):  Modules/shamodule.o; $(BLDSHARED)  Modules/shamodule.o   -o Modules/_shamodule$(SO)
+Modules/sha256module.o: $(srcdir)/Modules/sha256module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/sha256module.c -o Modules/sha256module.o
+Modules/_sha256module$(SO):  Modules/sha256module.o; $(BLDSHARED)  Modules/sha256module.o   -o Modules/_sha256module$(SO)
+Modules/sha512module.o: $(srcdir)/Modules/sha512module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/sha512module.c -o Modules/sha512module.o
+Modules/_sha512module$(SO):  Modules/sha512module.o; $(BLDSHARED)  Modules/sha512module.o   -o Modules/_sha512module$(SO)

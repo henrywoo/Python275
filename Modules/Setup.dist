@@ -135,7 +135,7 @@ zipimport zipimport.c
 # ======================================================================
 
 # The Python symtable module depends on .h files that setup.py doesn't track
-_symtable symtablemodule.c
+#_symtable symtablemodule.c
 
 # The SGI specific GL module:
 
@@ -180,11 +180,11 @@ _random _randommodule.c	# Random number generator
 _heapq _heapqmodule.c		# Heapq type
 #itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
 strop stropmodule.c		# String manipulations
-_functools _functoolsmodule.c	# Tools for working with functions and callable objects
-_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
-_pickle _pickle.c	# pickle accelerator
+#_functools _functoolsmodule.c	# Tools for working with functions and callable objects
+#_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
+#_pickle _pickle.c	# pickle accelerator
 datetime datetimemodule.c	# date/time type
-_bisect _bisectmodule.c	# Bisection algorithms
+#_bisect _bisectmodule.c	# Bisection algorithms
 
 #unicodedata unicodedata.c    # static Unicode character database
 
@@ -496,4 +496,4 @@ _sha512 sha512module.c
 # xx xxmodule.c
 
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
-xxsubtype xxsubtype.c
+#xxsubtype xxsubtype.c

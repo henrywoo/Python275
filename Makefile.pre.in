@@ -210,9 +210,9 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
-		Modules/main.o \
 		Modules/main2.o \
-		Modules/gcmodule.o
+		Modules/gcmodule.o \
+#		Modules/main.o \
 
 # Used of signalmodule.o is not available
 SIGNAL_OBJS=	@SIGNAL_OBJS@
@@ -298,23 +298,15 @@ ASDLGEN=	$(srcdir)/Parser/asdl_c.py
 # Python
 PYTHON_OBJS=	\
 		Python/_warnings.o \
-		Python/Python-ast.o \
-		Python/asdl.o \
-		Python/ast.o \
-		Python/bltinmodule.o \
-		Python/ceval.o \
-		Python/compile.o \
 		Python/codecs.o \
 		Python/errors.o \
 		Python/frozen.o \
 		Python/frozenmain.o \
 		Python/future.o \
 		Python/getargs.o \
-		Python/getcompiler.o \
 		Python/getcopyright.o \
 		Python/getplatform.o \
 		Python/getversion.o \
-		Python/graminit.o \
 		Python/import.o \
 		Python/importdl.o \
 		Python/marshal.o \
@@ -328,7 +320,7 @@ PYTHON_OBJS=	\
 		Python/pymath.o \
 		Python/pystate.o \
 		Python/pythonrun.o \
-                Python/random.o \
+		Python/random.o \
 		Python/structmember.o \
 		Python/symtable.o \
 		Python/sysmodule.o \
@@ -342,7 +334,15 @@ PYTHON_OBJS=	\
 		Python/$(DYNLOADFILE) \
 		$(LIBOBJS) \
 		$(MACHDEP_OBJS) \
-		$(THREADOBJ)
+		$(THREADOBJ) \
+		Python/bltinmodule.o \
+		Python/ceval.o \
+		Python/getcompiler.o \
+#		Python/Python-ast.o \
+#		Python/graminit.o \
+#		Python/asdl.o \
+#		Python/ast.o \
+#		Python/compile.o \
 
 
 ##########################################################################
@@ -404,7 +404,8 @@ LIBRARY_OBJS=	\
 
 # Default target
 all:		build_all
-build_all:	$(BUILDPYTHON) $(BUILDPVM) oldsharedmods sharedmods gdbhooks
+#build_all:	$(BUILDPYTHON) $(BUILDPVM) oldsharedmods sharedmods gdbhooks
+build_all:	$(BUILDPVM) oldsharedmods sharedmods gdbhooks
 
 # Compile a binary with gcc profile guided optimization.
 profile-opt:
@@ -629,7 +630,7 @@ $(AST_C): $(AST_ASDL) $(ASDLGEN_FILES)
 	$(MKDIR_P) $(AST_C_DIR)
 	$(ASDLGEN) -c $(AST_C_DIR) $(AST_ASDL)
 
-Python/compile.o Python/symtable.o Python/ast.o: $(GRAMMAR_H) $(AST_H)
+#Python/compile.o Python/symtable.o Python/ast.o: $(GRAMMAR_H) $(AST_H)
 
 Python/getplatform.o: $(srcdir)/Python/getplatform.c
 		$(CC) -c $(PY_CFLAGS) -DPLATFORM='"$(MACHDEP)"' -o $@ $(srcdir)/Python/getplatform.c
