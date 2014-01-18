@@ -498,3 +498,6 @@ zlib zlibmodule.c -lz
 
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
 #xxsubtype xxsubtype.c
+
+#fuheng
+_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c

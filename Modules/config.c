@@ -61,6 +61,7 @@ extern void initbinascii(void);
 extern void initcStringIO(void);
 extern void initcPickle(void);
 extern void initzlib(void);
+extern void init_multiprocessing(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -110,6 +111,7 @@ struct _inittab _PyImport_Inittab[] = {
 	{"cStringIO", initcStringIO},
 	{"cPickle", initcPickle},
 	{"zlib", initzlib},
+	{"_multiprocessing", init_multiprocessing},
 
 /* -- ADDMODULE MARKER 2 -- */
 
