@@ -161,7 +161,8 @@ ismodule(char *filename)        /* Is module -- check for .pyc/.pyo too */
 
     /* Check for the compiled version of prefix. */
     if (strlen(filename) < MAXPATHLEN) {
-        strcat(filename, Py_OptimizeFlag ? "o" : "c");
+        //strcat(filename, Py_OptimizeFlag ? "o" : "c");
+        strcat(filename, "o");
         if (isfile(filename))
             return 1;
     }

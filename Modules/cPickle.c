@@ -5926,12 +5926,12 @@ init_stuff(PyObject *module_dict)
         return -1;
 
     if (!( t=PyDict_New()))  return -1;
-    if (!( r=PyRun_String(
-                   "def __str__(self):\n"
-                   "  return self.args and ('%s' % self.args[0]) or '(what)'\n",
-                   Py_file_input,
-                   module_dict, t)  ))  return -1;
-    Py_DECREF(r);
+    //if (!( r=PyRun_String(
+    //               "def __str__(self):\n"
+    //               "  return self.args and ('%s' % self.args[0]) or '(what)'\n",
+    //               Py_file_input,
+    //               module_dict, t)  ))  return -1;
+    //Py_DECREF(r);
 
     PickleError = PyErr_NewException("cPickle.PickleError", NULL, t);
     if (!PickleError)
@@ -5945,14 +5945,14 @@ init_stuff(PyObject *module_dict)
         return -1;
 
     if (!( t=PyDict_New()))  return -1;
-    if (!( r=PyRun_String(
-                   "def __str__(self):\n"
-                   "  a=self.args\n"
-                   "  a=a and type(a[0]) or '(what)'\n"
-                   "  return 'Cannot pickle %s objects' % a\n"
-                   , Py_file_input,
-                   module_dict, t)  ))  return -1;
-    Py_DECREF(r);
+    //if (!( r=PyRun_String(
+    //               "def __str__(self):\n"
+    //               "  a=self.args\n"
+    //               "  a=a and type(a[0]) or '(what)'\n"
+    //               "  return 'Cannot pickle %s objects' % a\n"
+    //               , Py_file_input,
+    //               module_dict, t)  ))  return -1;
+    //Py_DECREF(r);
 
     if (!( UnpickleableError = PyErr_NewException(
                    "cPickle.UnpickleableError", PicklingError, t)))

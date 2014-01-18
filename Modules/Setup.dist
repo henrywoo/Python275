@@ -173,14 +173,14 @@ array arraymodule.c	# array objects
 math mathmodule.c _math.c # -lm # math library functions, e.g. sin()
 _struct _struct.c	# binary structure packing/unpacking
 time timemodule.c # -lm # time operations and variables
-#operator operator.c	# operator.add() and similar goodies
+operator operator.c	# operator.add() and similar goodies
 #_testcapi _testcapimodule.c    # Python C API test module
 _random _randommodule.c	# Random number generator
-#_collections _collectionsmodule.c # Container types
+_collections _collectionsmodule.c # Container types
 _heapq _heapqmodule.c		# Heapq type
-#itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
+itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
 strop stropmodule.c		# String manipulations
-#_functools _functoolsmodule.c	# Tools for working with functions and callable objects
+_functools _functoolsmodule.c	# Tools for working with functions and callable objects
 #_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
 #_pickle _pickle.c	# pickle accelerator
 datetime datetimemodule.c	# date/time type
@@ -192,33 +192,33 @@ datetime datetimemodule.c	# date/time type
 #_locale _localemodule.c  # -lintl
 
 # Standard I/O baseline
-#_io -I$(srcdir)/Modules/_io _io/bufferedio.c _io/bytesio.c _io/fileio.c _io/iobase.c _io/_iomodule.c _io/stringio.c _io/textio.c
+_io -I$(srcdir)/Modules/_io _io/bufferedio.c _io/bytesio.c _io/fileio.c _io/iobase.c _io/_iomodule.c _io/stringio.c _io/textio.c
 
 
 # Modules with some UNIX dependencies -- on by default:
 # (If you have a really backward UNIX, select and socket may not be
 # supported...)
 
-#fcntl fcntlmodule.c	# fcntl(2) and ioctl(2)
-#spwd spwdmodule.c		# spwd(3) 
-#grp grpmodule.c		# grp(3)
+fcntl fcntlmodule.c	# fcntl(2) and ioctl(2)
+spwd spwdmodule.c		# spwd(3) 
+grp grpmodule.c		# grp(3)
 select selectmodule.c	# select(2); not on ancient System V
 
 # Memory-mapped files (also works on Win32).
-#mmap mmapmodule.c
+mmap mmapmodule.c
 
 # CSV file helper
-#_csv _csv.c
+_csv _csv.c
 
 # Socket module helper for socket(2)
 _socket socketmodule.c timemodule.c
 
 # Socket module helper for SSL support; you must comment out the other
 # socket line above, and possibly edit the SSL variable:
-#SSL=/usr/local/ssl
-#_ssl _ssl.c \
-#	-DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
-#	-L$(SSL)/lib -lssl -lcrypto
+SSL=/usr/local/ssl
+_ssl _ssl.c \
+	-DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \
+	-L$(SSL)/lib -lssl -lcrypto
 
 # The crypt module is now disabled by default because it breaks builds
 # on many systems (where -lcrypt is needed), e.g. Linux (I believe).
@@ -434,14 +434,14 @@ _sha512 sha512module.c
 
 
 # Helper module for various ascii-encoders
-#binascii binascii.c
+binascii binascii.c
 
 # Fred Drake's interface to the Python parser
 #parser parsermodule.c
 
 # cStringIO and cPickle
-#cStringIO cStringIO.c
-#cPickle cPickle.c
+cStringIO cStringIO.c
+cPickle cPickle.c
 
 
 # Lee Busby's SIGFPE modules.
@@ -465,6 +465,7 @@ _sha512 sha512module.c
 # This require zlib 1.1.3 (or later).
 # See http://www.gzip.org/zlib/
 #zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz
+zlib zlibmodule.c -lz
 
 # Interface to the Expat XML parser
 #

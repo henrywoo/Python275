@@ -1228,31 +1228,32 @@ static PyObject *builtin_raw_input(PyObject *, PyObject *);
 static PyObject *
 builtin_input(PyObject *self, PyObject *args)
 {
-    PyObject *line;
-    char *str;
-    PyObject *res;
-    PyObject *globals, *locals;
-    PyCompilerFlags cf;
+    return NULL;
+    //PyObject *line;
+    //char *str;
+    //PyObject *res;
+    //PyObject *globals, *locals;
+    //PyCompilerFlags cf;
 
-    line = builtin_raw_input(self, args);
-    if (line == NULL)
-        return line;
-    if (!PyArg_Parse(line, "s;embedded '\\0' in input line", &str))
-        return NULL;
-    while (*str == ' ' || *str == '\t')
-                    str++;
-    globals = PyEval_GetGlobals();
-    locals = PyEval_GetLocals();
-    if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
-        if (PyDict_SetItemString(globals, "__builtins__",
-                                 PyEval_GetBuiltins()) != 0)
-            return NULL;
-    }
-    cf.cf_flags = 0;
-    PyEval_MergeCompilerFlags(&cf);
-    res = PyRun_StringFlags(str, Py_eval_input, globals, locals, &cf);
-    Py_DECREF(line);
-    return res;
+    //line = builtin_raw_input(self, args);
+    //if (line == NULL)
+    //    return line;
+    //if (!PyArg_Parse(line, "s;embedded '\\0' in input line", &str))
+    //    return NULL;
+    //while (*str == ' ' || *str == '\t')
+    //                str++;
+    //globals = PyEval_GetGlobals();
+    //locals = PyEval_GetLocals();
+    //if (PyDict_GetItemString(globals, "__builtins__") == NULL) {
+    //    if (PyDict_SetItemString(globals, "__builtins__",
+    //                             PyEval_GetBuiltins()) != 0)
+    //        return NULL;
+    //}
+    //cf.cf_flags = 0;
+    //PyEval_MergeCompilerFlags(&cf);
+    //res = PyRun_StringFlags(str, Py_eval_input, globals, locals, &cf);
+    //Py_DECREF(line);
+    //return res;
 }
 
 PyDoc_STRVAR(input_doc,
@@ -2732,7 +2733,7 @@ _PyBuiltin_Init(void)
 #ifdef Py_USING_UNICODE
     SETBUILTIN("unicode",               &PyUnicode_Type);
 #endif
-    debug = PyBool_FromLong(Py_OptimizeFlag == 0);
+    debug = PyBool_FromLong(1 == 0);
     if (PyDict_SetItemString(dict, "__debug__", debug) < 0) {
         Py_XDECREF(debug);
         return NULL;

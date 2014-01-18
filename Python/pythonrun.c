@@ -163,8 +163,8 @@ Py_InitializeEx(int install_sigs)
         Py_DebugFlag = add_flag(Py_DebugFlag, p);
     if ((p = Py_GETENV("PYTHONVERBOSE")) && *p != '\0')
         Py_VerboseFlag = add_flag(Py_VerboseFlag, p);
-    if ((p = Py_GETENV("PYTHONOPTIMIZE")) && *p != '\0')
-        Py_OptimizeFlag = add_flag(Py_OptimizeFlag, p);
+    //if ((p = Py_GETENV("PYTHONOPTIMIZE")) && *p != '\0')
+    //    Py_OptimizeFlag = add_flag(Py_OptimizeFlag, p);
     if ((p = Py_GETENV("PYTHONDONTWRITEBYTECODE")) && *p != '\0')
         Py_DontWriteBytecodeFlag = add_flag(Py_DontWriteBytecodeFlag, p);
     /* The variable is only tested for existence here; _PyRandom_Init will
@@ -717,16 +717,16 @@ initmain(void)
 static void
 initsite(void)
 {
-//    PyObject *m;
-//    m = PyImport_ImportModule("site");
-//    if (m == NULL) {
-//        PyErr_Print();
-//        Py_Finalize();
-//        exit(1);
-//    }
-//    else {
-//        Py_DECREF(m);
-//    }
+    PyObject *m;
+    m = PyImport_ImportModule("site");
+    if (m == NULL) {
+        PyErr_Print();
+        Py_Finalize();
+        exit(1);
+    }
+    else {
+        Py_DECREF(m);
+    }
 }
 
 /* Parse input from a file and execute it */

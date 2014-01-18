@@ -1217,7 +1217,7 @@ initzipimport(void)
     zip_searchorder[0].suffix[0] = SEP;
     zip_searchorder[1].suffix[0] = SEP;
     zip_searchorder[2].suffix[0] = SEP;
-    if (Py_OptimizeFlag) {
+    //if (Py_OptimizeFlag) {
         /* Reverse *.pyc and *.pyo */
         struct st_zip_searchorder tmp;
         tmp = zip_searchorder[0];
@@ -1226,7 +1226,7 @@ initzipimport(void)
         tmp = zip_searchorder[3];
         zip_searchorder[3] = zip_searchorder[4];
         zip_searchorder[4] = tmp;
-    }
+    //}
 
     mod = Py_InitModule4("zipimport", NULL, zipimport_doc,
                          NULL, PYTHON_API_VERSION);

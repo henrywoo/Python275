@@ -1873,16 +1873,16 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 
         // fuheng
         case EXEC_STMT:
-        //    w = TOP();
-        //    v = SECOND();
-        //    u = THIRD();
-        //    STACKADJ(-3);
-        //    READ_TIMESTAMP(intr0);
+            w = TOP();
+            v = SECOND();
+            u = THIRD();
+            STACKADJ(-3);
+            READ_TIMESTAMP(intr0);
         //    err = exec_statement(f, u, v, w);
-        //    READ_TIMESTAMP(intr1);
-        //    Py_DECREF(u);
-        //    Py_DECREF(v);
-        //    Py_DECREF(w);
+            READ_TIMESTAMP(intr1);
+            Py_DECREF(u);
+            Py_DECREF(v);
+            Py_DECREF(w);
             break;
 
         case POP_BLOCK:

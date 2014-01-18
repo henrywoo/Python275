@@ -21,7 +21,7 @@
 
 # === Variables set by makesetup ===
 
-MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/_randommodule.o  Modules/_heapqmodule.o  Modules/stropmodule.o  Modules/datetimemodule.o  Modules/selectmodule.o  Modules/socketmodule.o Modules/timemodule.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o
+MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/operator.o  Modules/_randommodule.o  Modules/_collectionsmodule.o  Modules/_heapqmodule.o  Modules/itertoolsmodule.o  Modules/stropmodule.o  Modules/_functoolsmodule.o  Modules/datetimemodule.o  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o  Modules/fcntlmodule.o  Modules/spwdmodule.o  Modules/grpmodule.o  Modules/selectmodule.o  Modules/mmapmodule.o  Modules/_csv.o  Modules/socketmodule.o Modules/timemodule.o  Modules/_ssl.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o  Modules/binascii.o  Modules/cStringIO.o  Modules/cPickle.o  Modules/zlibmodule.o
 MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 
 # === Variables set by configure
@@ -74,7 +74,7 @@ CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS) -s
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
-CPPFLAGS=	-I. -IInclude -I$(srcdir)/Include 
+CPPFLAGS=	-g -I. -IInclude -I$(srcdir)/Include 
 LDFLAGS=	
 LDLAST=		
 SGI_ABI=	
@@ -205,8 +205,9 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 
 # === Definitions added by makesetup ===
 
-LOCALMODLIBS=                       
+LOCALMODLIBS=                               -L$(SSL)/lib -lssl -lcrypto         -lz
 BASEMODLIBS=
+SSL=/usr/local/ssl
 GLHACK=-Dclear=__GLclear
 PYTHONPATH=$(COREPYTHONPATH)
 COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)$(TKPATH)$(OLDPATH)
@@ -1413,19 +1414,47 @@ Modules/_struct.o: $(srcdir)/Modules/_struct.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)
 Modules/_struct$(SO):  Modules/_struct.o; $(BLDSHARED)  Modules/_struct.o   -o Modules/_struct$(SO)
 Modules/timemodule.o: $(srcdir)/Modules/timemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/timemodule.c -o Modules/timemodule.o
 Modules/timemodule$(SO):  Modules/timemodule.o; $(BLDSHARED)  Modules/timemodule.o   -o Modules/timemodule$(SO)
+Modules/operator.o: $(srcdir)/Modules/operator.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/operator.c -o Modules/operator.o
+Modules/operator$(SO):  Modules/operator.o; $(BLDSHARED)  Modules/operator.o   -o Modules/operator$(SO)
 Modules/_randommodule.o: $(srcdir)/Modules/_randommodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_randommodule.c -o Modules/_randommodule.o
 Modules/_randommodule$(SO):  Modules/_randommodule.o; $(BLDSHARED)  Modules/_randommodule.o   -o Modules/_randommodule$(SO)
+Modules/_collectionsmodule.o: $(srcdir)/Modules/_collectionsmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_collectionsmodule.c -o Modules/_collectionsmodule.o
+Modules/_collectionsmodule$(SO):  Modules/_collectionsmodule.o; $(BLDSHARED)  Modules/_collectionsmodule.o   -o Modules/_collectionsmodule$(SO)
 Modules/_heapqmodule.o: $(srcdir)/Modules/_heapqmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_heapqmodule.c -o Modules/_heapqmodule.o
 Modules/_heapqmodule$(SO):  Modules/_heapqmodule.o; $(BLDSHARED)  Modules/_heapqmodule.o   -o Modules/_heapqmodule$(SO)
+Modules/itertoolsmodule.o: $(srcdir)/Modules/itertoolsmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/itertoolsmodule.c -o Modules/itertoolsmodule.o
+Modules/itertoolsmodule$(SO):  Modules/itertoolsmodule.o; $(BLDSHARED)  Modules/itertoolsmodule.o   -o Modules/itertoolsmodule$(SO)
 Modules/stropmodule.o: $(srcdir)/Modules/stropmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/stropmodule.c -o Modules/stropmodule.o
 Modules/stropmodule$(SO):  Modules/stropmodule.o; $(BLDSHARED)  Modules/stropmodule.o   -o Modules/stropmodule$(SO)
+Modules/_functoolsmodule.o: $(srcdir)/Modules/_functoolsmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_functoolsmodule.c -o Modules/_functoolsmodule.o
+Modules/_functoolsmodule$(SO):  Modules/_functoolsmodule.o; $(BLDSHARED)  Modules/_functoolsmodule.o   -o Modules/_functoolsmodule$(SO)
 Modules/datetimemodule.o: $(srcdir)/Modules/datetimemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/datetimemodule.c -o Modules/datetimemodule.o
 Modules/datetimemodule$(SO):  Modules/datetimemodule.o; $(BLDSHARED)  Modules/datetimemodule.o   -o Modules/datetimemodule$(SO)
+Modules/bufferedio.o: $(srcdir)/Modules/_io/bufferedio.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/bufferedio.c -o Modules/bufferedio.o
+Modules/bytesio.o: $(srcdir)/Modules/_io/bytesio.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/bytesio.c -o Modules/bytesio.o
+Modules/fileio.o: $(srcdir)/Modules/_io/fileio.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/fileio.c -o Modules/fileio.o
+Modules/iobase.o: $(srcdir)/Modules/_io/iobase.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/iobase.c -o Modules/iobase.o
+Modules/_iomodule.o: $(srcdir)/Modules/_io/_iomodule.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/_iomodule.c -o Modules/_iomodule.o
+Modules/stringio.o: $(srcdir)/Modules/_io/stringio.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/stringio.c -o Modules/stringio.o
+Modules/textio.o: $(srcdir)/Modules/_io/textio.c; $(CC) $(PY_CFLAGS)  -I$(srcdir)/Modules/_io -c $(srcdir)/Modules/_io/textio.c -o Modules/textio.o
+Modules/_iomodule$(SO):  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o; $(BLDSHARED)  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o   -o Modules/_iomodule$(SO)
+Modules/fcntlmodule.o: $(srcdir)/Modules/fcntlmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/fcntlmodule.c -o Modules/fcntlmodule.o
+Modules/fcntlmodule$(SO):  Modules/fcntlmodule.o; $(BLDSHARED)  Modules/fcntlmodule.o   -o Modules/fcntlmodule$(SO)
+Modules/spwdmodule.o: $(srcdir)/Modules/spwdmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/spwdmodule.c -o Modules/spwdmodule.o
+Modules/spwdmodule$(SO):  Modules/spwdmodule.o; $(BLDSHARED)  Modules/spwdmodule.o   -o Modules/spwdmodule$(SO)
+Modules/grpmodule.o: $(srcdir)/Modules/grpmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/grpmodule.c -o Modules/grpmodule.o
+Modules/grpmodule$(SO):  Modules/grpmodule.o; $(BLDSHARED)  Modules/grpmodule.o   -o Modules/grpmodule$(SO)
 Modules/selectmodule.o: $(srcdir)/Modules/selectmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/selectmodule.c -o Modules/selectmodule.o
 Modules/selectmodule$(SO):  Modules/selectmodule.o; $(BLDSHARED)  Modules/selectmodule.o   -o Modules/selectmodule$(SO)
+Modules/mmapmodule.o: $(srcdir)/Modules/mmapmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/mmapmodule.c -o Modules/mmapmodule.o
+Modules/mmapmodule$(SO):  Modules/mmapmodule.o; $(BLDSHARED)  Modules/mmapmodule.o   -o Modules/mmapmodule$(SO)
+Modules/_csv.o: $(srcdir)/Modules/_csv.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_csv.c -o Modules/_csv.o
+Modules/_csv$(SO):  Modules/_csv.o; $(BLDSHARED)  Modules/_csv.o   -o Modules/_csv$(SO)
 Modules/socketmodule.o: $(srcdir)/Modules/socketmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/socketmodule.c -o Modules/socketmodule.o
 Modules/timemodule.o: $(srcdir)/Modules/timemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/timemodule.c -o Modules/timemodule.o
 Modules/_socketmodule$(SO):  Modules/socketmodule.o Modules/timemodule.o; $(BLDSHARED)  Modules/socketmodule.o Modules/timemodule.o   -o Modules/_socketmodule$(SO)
+Modules/_ssl.o: $(srcdir)/Modules/_ssl.c; $(CC) $(PY_CFLAGS)  -DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl -c $(srcdir)/Modules/_ssl.c -o Modules/_ssl.o
+Modules/_ssl$(SO):  Modules/_ssl.o; $(BLDSHARED)  Modules/_ssl.o  -L$(SSL)/lib -lssl -lcrypto  -o Modules/_ssl$(SO)
 Modules/md5module.o: $(srcdir)/Modules/md5module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/md5module.c -o Modules/md5module.o
 Modules/md5.o: $(srcdir)/Modules/md5.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/md5.c -o Modules/md5.o
 Modules/_md5module$(SO):  Modules/md5module.o Modules/md5.o; $(BLDSHARED)  Modules/md5module.o Modules/md5.o   -o Modules/_md5module$(SO)
@@ -1435,3 +1464,11 @@ Modules/sha256module.o: $(srcdir)/Modules/sha256module.c; $(CC) $(PY_CFLAGS)  -c
 Modules/_sha256module$(SO):  Modules/sha256module.o; $(BLDSHARED)  Modules/sha256module.o   -o Modules/_sha256module$(SO)
 Modules/sha512module.o: $(srcdir)/Modules/sha512module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/sha512module.c -o Modules/sha512module.o
 Modules/_sha512module$(SO):  Modules/sha512module.o; $(BLDSHARED)  Modules/sha512module.o   -o Modules/_sha512module$(SO)
+Modules/binascii.o: $(srcdir)/Modules/binascii.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/binascii.c -o Modules/binascii.o
+Modules/binascii$(SO):  Modules/binascii.o; $(BLDSHARED)  Modules/binascii.o   -o Modules/binascii$(SO)
+Modules/cStringIO.o: $(srcdir)/Modules/cStringIO.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cStringIO.c -o Modules/cStringIO.o
+Modules/cStringIO$(SO):  Modules/cStringIO.o; $(BLDSHARED)  Modules/cStringIO.o   -o Modules/cStringIO$(SO)
+Modules/cPickle.o: $(srcdir)/Modules/cPickle.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cPickle.c -o Modules/cPickle.o
+Modules/cPickle$(SO):  Modules/cPickle.o; $(BLDSHARED)  Modules/cPickle.o   -o Modules/cPickle$(SO)
+Modules/zlibmodule.o: $(srcdir)/Modules/zlibmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/zlibmodule.c -o Modules/zlibmodule.o
+Modules/zlibmodule$(SO):  Modules/zlibmodule.o; $(BLDSHARED)  Modules/zlibmodule.o  -lz  -o Modules/zlibmodule$(SO)

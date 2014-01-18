@@ -11,7 +11,7 @@ Py_Main_Backend(int argc, char **argv){
 
     char* filename=argv[1];
     if ((fp = fopen(filename, "rb")) == NULL) {
-        fprintf(stderr, "python: Can't open .pyc file\n");
+        fprintf(stderr, "python: Can't open .pyo file\n");
         return -1;
     }
     Py_Initialize();//<--->Py_Finalize();
@@ -31,7 +31,6 @@ Py_Main_Backend(int argc, char **argv){
         set_file_name = 1;
         Py_DECREF(f);
     }
-    Py_OptimizeFlag = 1;
     v = run_pyo(fp, filename, d, d);//
     if (v == NULL) {
         PyErr_Print();

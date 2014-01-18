@@ -1243,7 +1243,7 @@ make_flags(void)
     SetFlag(_Py_QnewFlag);
     SetFlag(Py_InspectFlag);
     SetFlag(Py_InteractiveFlag);
-    SetFlag(Py_OptimizeFlag);
+    //SetFlag(Py_OptimizeFlag);
     SetFlag(Py_DontWriteBytecodeFlag);
     SetFlag(Py_NoUserSiteDirectory);
     SetFlag(Py_NoSiteFlag);
