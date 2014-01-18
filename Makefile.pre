@@ -81,7 +81,7 @@ CCSHARED=	-fPIC
 LINKFORSHARED=	-Xlinker -export-dynamic
 ARFLAGS=	rc
 # Extra C flags added for building the interpreter object files.
-CFLAGSFORSHARED=
+CFLAGSFORSHARED=$(CCSHARED)
 # C flags used for building the interpreter object files
 PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 
@@ -143,7 +143,7 @@ MACOSX_DEPLOYMENT_TARGET=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       
+RUNSHARED=       LD_LIBRARY_PATH=/nfs/src/Python-2.7.5:
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -152,7 +152,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--disable-shared' '--without-pydebug'
+CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug'
 
 
 # Subdirectories with code
@@ -169,11 +169,11 @@ DIST=		$(DISTFILES) $(DISTDIRS)
 
 
 LIBRARY=	libpython$(VERSION).a
-LDLIBRARY=      libpython$(VERSION).a
-BLDLIBRARY=     $(LDLIBRARY)
+LDLIBRARY=      libpython$(VERSION).so
+BLDLIBRARY=     -L. -lpython$(VERSION)
 DLLLIBRARY=	
 LDLIBRARYDIR=   
-INSTSONAME=	$(LDLIBRARY)
+INSTSONAME=	libpython$(VERSION).so.1.0
 
 
 LIBS=		-lpthread -ldl  -lutil

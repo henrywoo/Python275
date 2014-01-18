@@ -21,7 +21,7 @@
 
 # === Variables set by makesetup ===
 
-MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/operator.o  Modules/_randommodule.o  Modules/_collectionsmodule.o  Modules/_heapqmodule.o  Modules/itertoolsmodule.o  Modules/stropmodule.o  Modules/_functoolsmodule.o  Modules/datetimemodule.o  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o  Modules/fcntlmodule.o  Modules/spwdmodule.o  Modules/grpmodule.o  Modules/selectmodule.o  Modules/mmapmodule.o  Modules/_csv.o  Modules/socketmodule.o Modules/timemodule.o  Modules/_ssl.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o  Modules/binascii.o  Modules/cStringIO.o  Modules/cPickle.o  Modules/zlibmodule.o
+MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/operator.o  Modules/_randommodule.o  Modules/_collectionsmodule.o  Modules/_heapqmodule.o  Modules/itertoolsmodule.o  Modules/stropmodule.o  Modules/_functoolsmodule.o  Modules/datetimemodule.o  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o  Modules/fcntlmodule.o  Modules/spwdmodule.o  Modules/grpmodule.o  Modules/selectmodule.o  Modules/mmapmodule.o  Modules/_csv.o  Modules/socketmodule.o  Modules/_ssl.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o  Modules/binascii.o  Modules/cStringIO.o  Modules/cPickle.o  Modules/zlibmodule.o  Modules/multibytecodec.o  Modules/_codecs_cn.o  Modules/_codecs_hk.o  Modules/_codecs_jp.o  Modules/_codecs_tw.o  Modules/multiprocessing.o Modules/socket_connection.o Modules/semaphore.o
 MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 
 # === Variables set by configure
@@ -82,7 +82,7 @@ CCSHARED=	-fPIC
 LINKFORSHARED=	-Xlinker -export-dynamic
 ARFLAGS=	rc
 # Extra C flags added for building the interpreter object files.
-CFLAGSFORSHARED=
+CFLAGSFORSHARED=$(CCSHARED)
 # C flags used for building the interpreter object files
 PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 
@@ -144,7 +144,7 @@ MACOSX_DEPLOYMENT_TARGET=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       
+RUNSHARED=       LD_LIBRARY_PATH=/nfs/src/Python-2.7.5:
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -153,7 +153,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--disable-shared' '--without-pydebug'
+CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug'
 
 
 # Subdirectories with code
@@ -170,11 +170,11 @@ DIST=		$(DISTFILES) $(DISTDIRS)
 
 
 LIBRARY=	libpython$(VERSION).a
-LDLIBRARY=      libpython$(VERSION).a
-BLDLIBRARY=     $(LDLIBRARY)
+LDLIBRARY=      libpython$(VERSION).so
+BLDLIBRARY=     -L. -lpython$(VERSION)
 DLLLIBRARY=	
 LDLIBRARYDIR=   
-INSTSONAME=	$(LDLIBRARY)
+INSTSONAME=	libpython$(VERSION).so.1.0
 
 
 LIBS=		-lpthread -ldl  -lutil
@@ -205,7 +205,7 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 
 # === Definitions added by makesetup ===
 
-LOCALMODLIBS=                               -L$(SSL)/lib -lssl -lcrypto         -lz
+LOCALMODLIBS=                               -L$(SSL)/lib -lssl -lcrypto         -lz      
 BASEMODLIBS=
 SSL=/usr/local/ssl
 GLHACK=-Dclear=__GLclear
@@ -1451,8 +1451,7 @@ Modules/mmapmodule$(SO):  Modules/mmapmodule.o; $(BLDSHARED)  Modules/mmapmodule
 Modules/_csv.o: $(srcdir)/Modules/_csv.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_csv.c -o Modules/_csv.o
 Modules/_csv$(SO):  Modules/_csv.o; $(BLDSHARED)  Modules/_csv.o   -o Modules/_csv$(SO)
 Modules/socketmodule.o: $(srcdir)/Modules/socketmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/socketmodule.c -o Modules/socketmodule.o
-Modules/timemodule.o: $(srcdir)/Modules/timemodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/timemodule.c -o Modules/timemodule.o
-Modules/_socketmodule$(SO):  Modules/socketmodule.o Modules/timemodule.o; $(BLDSHARED)  Modules/socketmodule.o Modules/timemodule.o   -o Modules/_socketmodule$(SO)
+Modules/_socketmodule$(SO):  Modules/socketmodule.o; $(BLDSHARED)  Modules/socketmodule.o   -o Modules/_socketmodule$(SO)
 Modules/_ssl.o: $(srcdir)/Modules/_ssl.c; $(CC) $(PY_CFLAGS)  -DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl -c $(srcdir)/Modules/_ssl.c -o Modules/_ssl.o
 Modules/_ssl$(SO):  Modules/_ssl.o; $(BLDSHARED)  Modules/_ssl.o  -L$(SSL)/lib -lssl -lcrypto  -o Modules/_ssl$(SO)
 Modules/md5module.o: $(srcdir)/Modules/md5module.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/md5module.c -o Modules/md5module.o
@@ -1472,3 +1471,17 @@ Modules/cPickle.o: $(srcdir)/Modules/cPickle.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)
 Modules/cPickle$(SO):  Modules/cPickle.o; $(BLDSHARED)  Modules/cPickle.o   -o Modules/cPickle$(SO)
 Modules/zlibmodule.o: $(srcdir)/Modules/zlibmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/zlibmodule.c -o Modules/zlibmodule.o
 Modules/zlibmodule$(SO):  Modules/zlibmodule.o; $(BLDSHARED)  Modules/zlibmodule.o  -lz  -o Modules/zlibmodule$(SO)
+Modules/multibytecodec.o: $(srcdir)/Modules/cjkcodecs/multibytecodec.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/multibytecodec.c -o Modules/multibytecodec.o
+Modules/_multibytecodecmodule$(SO):  Modules/multibytecodec.o; $(BLDSHARED)  Modules/multibytecodec.o   -o Modules/_multibytecodecmodule$(SO)
+Modules/_codecs_cn.o: $(srcdir)/Modules/cjkcodecs/_codecs_cn.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_cn.c -o Modules/_codecs_cn.o
+Modules/_codecs_cn$(SO):  Modules/_codecs_cn.o; $(BLDSHARED)  Modules/_codecs_cn.o   -o Modules/_codecs_cn$(SO)
+Modules/_codecs_hk.o: $(srcdir)/Modules/cjkcodecs/_codecs_hk.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_hk.c -o Modules/_codecs_hk.o
+Modules/_codecs_hk$(SO):  Modules/_codecs_hk.o; $(BLDSHARED)  Modules/_codecs_hk.o   -o Modules/_codecs_hk$(SO)
+Modules/_codecs_jp.o: $(srcdir)/Modules/cjkcodecs/_codecs_jp.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_jp.c -o Modules/_codecs_jp.o
+Modules/_codecs_jp$(SO):  Modules/_codecs_jp.o; $(BLDSHARED)  Modules/_codecs_jp.o   -o Modules/_codecs_jp$(SO)
+Modules/_codecs_tw.o: $(srcdir)/Modules/cjkcodecs/_codecs_tw.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_tw.c -o Modules/_codecs_tw.o
+Modules/_codecs_tw$(SO):  Modules/_codecs_tw.o; $(BLDSHARED)  Modules/_codecs_tw.o   -o Modules/_codecs_tw$(SO)
+Modules/multiprocessing.o: $(srcdir)/Modules/_multiprocessing/multiprocessing.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/multiprocessing.c -o Modules/multiprocessing.o
+Modules/socket_connection.o: $(srcdir)/Modules/_multiprocessing/socket_connection.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/socket_connection.c -o Modules/socket_connection.o
+Modules/semaphore.o: $(srcdir)/Modules/_multiprocessing/semaphore.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/semaphore.c -o Modules/semaphore.o
+Modules/_multiprocessingmodule$(SO):  Modules/multiprocessing.o Modules/socket_connection.o Modules/semaphore.o; $(BLDSHARED)  Modules/multiprocessing.o Modules/socket_connection.o Modules/semaphore.o   -o Modules/_multiprocessingmodule$(SO)

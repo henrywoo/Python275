@@ -99,7 +99,7 @@ static double floattime(void);
 static PyObject *moddict = NULL;
 
 /* Exposed in timefuncs.h. */
-time_t
+PyAPI_FUNC(time_t)
 _PyTime_DoubleToTimet(double x)
 {
     time_t result;

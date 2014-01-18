@@ -7,3 +7,4 @@ sudo ln -s plat-x86_64-linux-gnu/_sysconfigdata_nd.py .
 
 https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466
 
+timemodule compile twice, should remove it from socket module

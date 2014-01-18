@@ -57,8 +57,8 @@ Py_FrozenMain(int argc, char **argv)
     else
         sts = 0;
 
-    if (inspect && isatty((int)fileno(stdin)))
-        sts = PyRun_AnyFile(stdin, "<stdin>") != 0;
+    //if (inspect && isatty((int)fileno(stdin)))
+    //    sts = PyRun_AnyFile(stdin, "<stdin>") != 0;
 
 #ifdef MS_WINDOWS
     PyWinFreeze_ExeTerm();

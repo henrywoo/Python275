@@ -211,7 +211,7 @@ mmap mmapmodule.c
 _csv _csv.c
 
 # Socket module helper for socket(2)
-_socket socketmodule.c timemodule.c
+_socket socketmodule.c #timemodule.c
 
 # Socket module helper for SSL support; you must comment out the other
 # socket line above, and possibly edit the SSL variable:
@@ -484,15 +484,16 @@ zlib zlibmodule.c -lz
 # Hye-Shik Chang's CJKCodecs
 
 # multibytecodec is required for all the other CJK codec modules
-#_multibytecodec cjkcodecs/multibytecodec.c
+_multibytecodec cjkcodecs/multibytecodec.c
 
-#_codecs_cn cjkcodecs/_codecs_cn.c
-#_codecs_hk cjkcodecs/_codecs_hk.c
+_codecs_cn cjkcodecs/_codecs_cn.c
+_codecs_hk cjkcodecs/_codecs_hk.c
 #_codecs_iso2022 cjkcodecs/_codecs_iso2022.c
-#_codecs_jp cjkcodecs/_codecs_jp.c
+_codecs_jp cjkcodecs/_codecs_jp.c
 #_codecs_kr cjkcodecs/_codecs_kr.c
-#_codecs_tw cjkcodecs/_codecs_tw.c
+_codecs_tw cjkcodecs/_codecs_tw.c
 
+_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/socket_connection.c _multiprocessing/semaphore.c
 # Example -- included for reference only:
 # xx xxmodule.c
 
