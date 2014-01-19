@@ -1,0 +1,466 @@
+diff -ruN orig/escape.py new/escape.py
+--- orig/escape.py	2014-01-19 02:20:38.732502207 -0800
++++ new/escape.py	2014-01-19 02:20:16.551803460 -0800
+@@ -27,23 +27,192 @@
+ 
+ from tornado.util import bytes_type, unicode_type, basestring_type, u
+ 
+-try:
+-    from urllib.parse import parse_qs as _parse_qs  # py3
+-except ImportError:
+-    from urlparse import parse_qs as _parse_qs  # Python 2.6+
++#try:
++#    from urllib.parse import parse_qs as _parse_qs  # py3
++#except ImportError:
++#    from urlparse import parse_qs as _parse_qs  # Python 2.6+
+ 
+ try:
+     import htmlentitydefs  # py2
+ except ImportError:
+     import html.entities as htmlentitydefs  # py3
+ 
+-try:
+-    import urllib.parse as urllib_parse  # py3
+-except ImportError:
+-    import urllib as urllib_parse  # py2
++#try:
++#    import urllib.parse as urllib_parse  # py3
++#except ImportError:
++#    import urllib as urllib_parse  # py2
++#import urllib as urllib_parse  # py2
++#import urllib  # py2
++#from urlparse import parse_qs as _parse_qs  # Python 2.6+
+ 
+ import json
+ 
++################################################################################
++# unquote method for parse_qs and parse_qsl
++# Cannot use directly from urllib as it would create a circular reference
++# because urllib uses urlparse methods (urljoin).  If you update this function,
++# update it also in urllib.  This code duplication does not existin in Python3.
++_hexdig = '0123456789ABCDEFabcdef'
++_hextochr = dict((a+b, chr(int(a+b,16)))
++                 for a in _hexdig for b in _hexdig)
++_asciire = re.compile('([\x00-\x7f]+)')
++
++def unquote(s):
++    """unquote('abc%20def') -> 'abc def'."""
++    if _is_unicode(s):
++        if '%' not in s:
++            return s
++        bits = _asciire.split(s)
++        res = [bits[0]]
++        append = res.append
++        for i in range(1, len(bits), 2):
++            append(unquote(str(bits[i])).decode('latin1'))
++            append(bits[i + 1])
++        return ''.join(res)
++
++    bits = s.split('%')
++    # fastpath
++    if len(bits) == 1:
++        return s
++    res = [bits[0]]
++    append = res.append
++    for item in bits[1:]:
++        try:
++            append(_hextochr[item[:2]])
++            append(item[2:])
++        except KeyError:
++            append('%')
++            append(item)
++    return ''.join(res)
++
++def _parse_qs(qs, keep_blank_values=0, strict_parsing=0):
++    dict = {}
++    for name, value in parse_qsl(qs, keep_blank_values, strict_parsing):
++        if name in dict:
++            dict[name].append(value)
++        else:
++            dict[name] = [value]
++    return dict
++
++def parse_qsl(qs, keep_blank_values=0, strict_parsing=0):
++    pairs = [s2 for s1 in qs.split('&') for s2 in s1.split(';')]
++    r = []
++    for name_value in pairs:
++        if not name_value and not strict_parsing:
++            continue
++        nv = name_value.split('=', 1)
++        if len(nv) != 2:
++            if strict_parsing:
++                raise ValueError, "bad query field: %r" % (name_value,)
++            # Handle case of a control-name with no equal sign
++            if keep_blank_values:
++                nv.append('')
++            else:
++                continue
++        if len(nv[1]) or keep_blank_values:
++            name = unquote(nv[0].replace('+', ' '))
++            value = unquote(nv[1].replace('+', ' '))
++            r.append((name, value))
++
++    return r
++################################################################################
++# urlparse contains a duplicate of this method to avoid a circular import.  If
++# you update this method, also update the copy in urlparse.  This code
++# duplication does not exist in Python3.
++
++_hexdig = '0123456789ABCDEFabcdef'
++_hextochr = dict((a + b, chr(int(a + b, 16)))
++                 for a in _hexdig for b in _hexdig)
++_asciire = re.compile('([\x00-\x7f]+)')
++
++def urllib_unquote(s):
++    """unquote('abc%20def') -> 'abc def'."""
++    if _is_unicode(s):
++        if '%' not in s:
++            return s
++        bits = _asciire.split(s)
++        res = [bits[0]]
++        append = res.append
++        for i in range(1, len(bits), 2):
++            append(unquote(str(bits[i])).decode('latin1'))
++            append(bits[i + 1])
++        return ''.join(res)
++
++    bits = s.split('%')
++    # fastpath
++    if len(bits) == 1:
++        return s
++    res = [bits[0]]
++    append = res.append
++    for item in bits[1:]:
++        try:
++            append(_hextochr[item[:2]])
++            append(item[2:])
++        except KeyError:
++            append('%')
++            append(item)
++    return ''.join(res)
++
++def urllib_unquote_plus(s):
++    """unquote('%7e/abc+def') -> '~/abc def'"""
++    s = s.replace('+', ' ')
++    return urllib_unquote(s)
++
++always_safe = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
++               'abcdefghijklmnopqrstuvwxyz'
++               '0123456789' '_.-')
++_safe_map = {}
++for i, c in zip(xrange(256), str(bytearray(xrange(256)))):
++    _safe_map[c] = c if (i < 128 and c in always_safe) else '%{:02X}'.format(i)
++_safe_quoters = {}
++
++def urllib_quote(s, safe='/'):
++    """quote('abc def') -> 'abc%20def'
++
++    Each part of a URL, e.g. the path info, the query, etc., has a
++    different set of reserved characters that must be quoted.
++
++    RFC 2396 Uniform Resource Identifiers (URI): Generic Syntax lists
++    the following reserved characters.
++
++    reserved    = ";" | "/" | "?" | ":" | "@" | "&" | "=" | "+" |
++                  "$" | ","
++
++    Each of these characters is reserved in some component of a URL,
++    but not necessarily in all of them.
++
++    By default, the quote function is intended for quoting the path
++    section of a URL.  Thus, it will not encode '/'.  This character
++    is reserved, but in typical usage the quote function is being
++    called on a path where the existing slash characters are used as
++    reserved characters.
++    """
++    # fastpath
++    if not s:
++        if s is None:
++            raise TypeError('None object cannot be quoted')
++        return s
++    cachekey = (safe, always_safe)
++    try:
++        (quoter, safe) = _safe_quoters[cachekey]
++    except KeyError:
++        safe_map = _safe_map.copy()
++        safe_map.update([(c, c) for c in safe])
++        quoter = safe_map.__getitem__
++        safe = always_safe + safe
++        _safe_quoters[cachekey] = (quoter, safe)
++    if not s.rstrip(safe):
++        return s
++    return ''.join(map(quoter, s))
++
++def urllib_quote_plus(s, safe=''):
++    """Quote the query fragment of a URL; replacing ' ' with '+'"""
++    if ' ' in s:
++        s = urllib_quote(s, safe + ' ')
++        return s.replace(' ', '+')
++    return urllib_quote(s, safe)
++################################################################################
++
+ try:
+     unichr
+ except NameError:
+@@ -99,7 +268,7 @@
+     .. versionadded:: 3.1
+         The ``plus`` argument
+     """
+-    quote = urllib_parse.quote_plus if plus else urllib_parse.quote
++    quote = urllib_quote_plus if plus else urllib_quote
+     return quote(utf8(value))
+ 
+ 
+@@ -124,7 +293,7 @@
+         .. versionadded:: 3.1
+            The ``plus`` argument
+         """
+-        unquote = (urllib_parse.unquote_plus if plus else urllib_parse.unquote)
++        unquote = (urllib_unquote_plus if plus else urllib_unquote)
+         if encoding is None:
+             return unquote(utf8(value))
+         else:
+@@ -132,49 +301,50 @@
+ 
+     parse_qs_bytes = _parse_qs
+ else:
+-    def url_unescape(value, encoding='utf-8', plus=True):
+-        """Decodes the given value from a URL.
+-
+-        The argument may be either a byte or unicode string.
+-
+-        If encoding is None, the result will be a byte string.  Otherwise,
+-        the result is a unicode string in the specified encoding.
+-
+-        If ``plus`` is true (the default), plus signs will be interpreted
+-        as spaces (literal plus signs must be represented as "%2B").  This
+-        is appropriate for query strings and form-encoded values but not
+-        for the path component of a URL.  Note that this default is the
+-        reverse of Python's urllib module.
+-
+-        .. versionadded:: 3.1
+-           The ``plus`` argument
+-        """
+-        if encoding is None:
+-            if plus:
+-                # unquote_to_bytes doesn't have a _plus variant
+-                value = to_basestring(value).replace('+', ' ')
+-            return urllib_parse.unquote_to_bytes(value)
+-        else:
+-            unquote = (urllib_parse.unquote_plus if plus
+-                       else urllib_parse.unquote)
+-            return unquote(to_basestring(value), encoding=encoding)
+-
+-    def parse_qs_bytes(qs, keep_blank_values=False, strict_parsing=False):
+-        """Parses a query string like urlparse.parse_qs, but returns the
+-        values as byte strings.
+-
+-        Keys still become type str (interpreted as latin1 in python3!)
+-        because it's too painful to keep them as byte strings in
+-        python3 and in practice they're nearly always ascii anyway.
+-        """
+-        # This is gross, but python3 doesn't give us another way.
+-        # Latin1 is the universal donor of character encodings.
+-        result = _parse_qs(qs, keep_blank_values, strict_parsing,
+-                           encoding='latin1', errors='strict')
+-        encoded = {}
+-        for k, v in result.items():
+-            encoded[k] = [i.encode('latin1') for i in v]
+-        return encoded
++    pass
++    #def url_unescape(value, encoding='utf-8', plus=True):
++    #    """Decodes the given value from a URL.
++
++    #    The argument may be either a byte or unicode string.
++
++    #    If encoding is None, the result will be a byte string.  Otherwise,
++    #    the result is a unicode string in the specified encoding.
++
++    #    If ``plus`` is true (the default), plus signs will be interpreted
++    #    as spaces (literal plus signs must be represented as "%2B").  This
++    #    is appropriate for query strings and form-encoded values but not
++    #    for the path component of a URL.  Note that this default is the
++    #    reverse of Python's urllib module.
++
++    #    .. versionadded:: 3.1
++    #       The ``plus`` argument
++    #    """
++    #    if encoding is None:
++    #        if plus:
++    #            # unquote_to_bytes doesn't have a _plus variant
++    #            value = to_basestring(value).replace('+', ' ')
++    #        return urllib.unquote_to_bytes(value)
++    #    else:
++    #        unquote = (urllib.unquote_plus if plus
++    #                   else urllib.unquote)
++    #        return unquote(to_basestring(value), encoding=encoding)
++
++    #def parse_qs_bytes(qs, keep_blank_values=False, strict_parsing=False):
++    #    """Parses a query string like urlparse.parse_qs, but returns the
++    #    values as byte strings.
++
++    #    Keys still become type str (interpreted as latin1 in python3!)
++    #    because it's too painful to keep them as byte strings in
++    #    python3 and in practice they're nearly always ascii anyway.
++    #    """
++    #    # This is gross, but python3 doesn't give us another way.
++    #    # Latin1 is the universal donor of character encodings.
++    #    result = _parse_qs(qs, keep_blank_values, strict_parsing,
++    #                       encoding='latin1', errors='strict')
++    #    encoded = {}
++    #    for k, v in result.items():
++    #        encoded[k] = [i.encode('latin1') for i in v]
++    #    return encoded
+ 
+ 
+ _UTF8_TYPES = (bytes_type, type(None))
+diff -ruN orig/util.py new/util.py
+--- orig/util.py	2014-01-19 02:20:38.684500695 -0800
++++ new/util.py	2014-01-19 02:20:16.535802956 -0800
+@@ -12,7 +12,6 @@
+ 
+ from __future__ import absolute_import, division, print_function, with_statement
+ 
+-import inspect
+ import sys
+ import zlib
+ 
+@@ -108,18 +107,28 @@
+     basestring_type = basestring
+ 
+ 
+-if sys.version_info > (3,):
+-    exec("""
+-def raise_exc_info(exc_info):
+-    raise exc_info[1].with_traceback(exc_info[2])
+-
+-def exec_in(code, glob, loc=None):
+-    if isinstance(code, str):
+-        code = compile(code, '<string>', 'exec', dont_inherit=True)
+-    exec(code, glob, loc)
+-""")
+-else:
+-    exec("""
++#if sys.version_info > (3,):
++#    exec("""
++#def raise_exc_info(exc_info):
++#    raise exc_info[1].with_traceback(exc_info[2])
++#
++#def exec_in(code, glob, loc=None):
++#    if isinstance(code, str):
++#        code = compile(code, '<string>', 'exec', dont_inherit=True)
++#    exec(code, glob, loc)
++#""")
++#else:
++#    exec("""
++#def raise_exc_info(exc_info):
++#    raise exc_info[0], exc_info[1], exc_info[2]
++#
++#def exec_in(code, glob, loc=None):
++#    if isinstance(code, basestring):
++#        # exec(string) inherits the caller's future imports; compile
++#        # the string first to prevent that.
++#        code = compile(code, '<string>', 'exec', dont_inherit=True)
++#    exec code in glob, loc
++#""")
+ def raise_exc_info(exc_info):
+     raise exc_info[0], exc_info[1], exc_info[2]
+ 
+@@ -129,7 +138,6 @@
+         # the string first to prevent that.
+         code = compile(code, '<string>', 'exec', dont_inherit=True)
+     exec code in glob, loc
+-""")
+ 
+ 
+ class Configurable(object):
+@@ -227,6 +235,79 @@
+         base.__impl_class = saved[0]
+         base.__impl_kwargs = saved[1]
+ 
++def _getargs(co):
++    """Get information about the arguments accepted by a code object.
++
++    Three things are returned: (args, varargs, varkw), where 'args' is
++    a list of argument names (possibly containing nested lists), and
++    'varargs' and 'varkw' are the names of the * and ** arguments or None."""
++
++    if not iscode(co):
++        raise TypeError('{!r} is not a code object'.format(co))
++
++    nargs = co.co_argcount
++    names = co.co_varnames
++    args = list(names[:nargs])
++    step = 0 
++
++    # The following acrobatics are for anonymous (tuple) arguments.
++    for i in range(nargs):
++        if args[i][:1] in ('', '.'):
++            stack, remain, count = [], [], []
++            while step < len(co.co_code):
++                op = ord(co.co_code[step])
++                step = step + 1 
++                if op >= dis.HAVE_ARGUMENT:
++                    opname = dis.opname[op]
++                    value = ord(co.co_code[step]) + ord(co.co_code[step+1])*256
++                    step = step + 2 
++                    if opname in ('UNPACK_TUPLE', 'UNPACK_SEQUENCE'):
++                        remain.append(value)
++                        count.append(value)
++                    elif opname == 'STORE_FAST':
++                        stack.append(names[value])
++
++                        # Special case for sublists of length 1: def foo((bar))
++                        # doesn't generate the UNPACK_TUPLE bytecode, so if
++                        # `remain` is empty here, we have such a sublist.
++                        if not remain:
++                            stack[0] = [stack[0]]
++                            break
++                        else:
++                            remain[-1] = remain[-1] - 1 
++                            while remain[-1] == 0:
++                                remain.pop()
++                                size = count.pop()
++                                stack[-size:] = [stack[-size:]]
++                                if not remain: break
++                                remain[-1] = remain[-1] - 1
++                            if not remain: break
++            args[i] = stack[0]
++
++    varargs = None
++    if co.co_flags & CO_VARARGS:
++        varargs = co.co_varnames[nargs]
++        nargs = nargs + 1
++    varkw = None
++    if co.co_flags & CO_VARKEYWORDS:
++        varkw = co.co_varnames[nargs]
++    return (args, varargs, varkw)
++
++#def _getargspec(func):
++#    """Get the names and default values of a function's arguments.
++#
++#    A tuple of four things is returned: (args, varargs, varkw, defaults).
++#    'args' is a list of the argument names (it may contain nested lists).
++#    'varargs' and 'varkw' are the names of the * and ** arguments or None.
++#    'defaults' is an n-tuple of the default values of the last n arguments.
++#    """
++#
++#    if ismethod(func):
++#        func = func.im_func
++#    if not isfunction(func):
++#        raise TypeError('{!r} is not a Python function'.format(func))
++#    args, varargs, varkw = getargs(func.func_code)
++#    return (args, varargs, varkw, func.func_defaults)
+ 
+ class ArgReplacer(object):
+     """Replaces one value in an ``args, kwargs`` pair.
+@@ -238,7 +319,8 @@
+     def __init__(self, func, name):
+         self.name = name
+         try:
+-            self.arg_pos = inspect.getargspec(func).args.index(self.name)
++            args = _getargs(func)[0]
++            self.arg_pos = args.index(self.name)
+         except ValueError:
+             # Not a positional parameter
+             self.arg_pos = None
