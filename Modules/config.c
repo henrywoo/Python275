@@ -32,8 +32,6 @@ extern void init_sre(void);
 extern void init_codecs(void);
 extern void init_weakref(void);
 extern void initzipimport(void);
-extern void initcPickle(void);
-extern void initxxsubtype(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -54,8 +52,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_codecs", init_codecs},
 	{"_weakref", init_weakref},
 	{"zipimport", initzipimport},
-	{"cPickle", initcPickle},
-	{"xxsubtype", initxxsubtype},
 
 /* -- ADDMODULE MARKER 2 -- */
 
