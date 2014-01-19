@@ -153,7 +153,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug'
+CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug' '--without-doc-strings'
 
 
 # Subdirectories with code
