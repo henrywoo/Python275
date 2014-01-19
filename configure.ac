@@ -737,7 +737,7 @@ AC_SUBST(LIBRARY)
 AC_MSG_CHECKING(LIBRARY)
 if test -z "$LIBRARY"
 then
-	LIBRARY='libpython$(VERSION).a'
+	LIBRARY='libpvm$(VERSION).a'
 fi
 AC_MSG_RESULT($LIBRARY)
 
@@ -869,22 +869,9 @@ fi
 if test $enable_shared = "yes"; then
   AC_DEFINE(Py_ENABLE_SHARED, 1, [Defined if Python is built as a shared library.])
   case $ac_sys_system in
-    BeOS*)
-          LDLIBRARY='libpython$(VERSION).so'
-          ;;
-    CYGWIN*)
-          LDLIBRARY='libpython$(VERSION).dll.a'
-          DLLLIBRARY='libpython$(VERSION).dll'
-          ;;
-    SunOS*)
-	  LDLIBRARY='libpython$(VERSION).so'
-	  BLDLIBRARY='-Wl,-R,$(LIBDIR) -L. -lpython$(VERSION)'
-	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
-	  INSTSONAME="$LDLIBRARY".$SOVERSION
-          ;;
     Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*)
-	  LDLIBRARY='libpython$(VERSION).so'
-	  BLDLIBRARY='-L. -lpython$(VERSION)'
+	  LDLIBRARY='libpvm$(VERSION).so'
+	  BLDLIBRARY='-L. -lpvm$(VERSION)'
 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
 	  case $ac_sys_system in
 	      FreeBSD*)
@@ -896,32 +883,32 @@ if test $enable_shared = "yes"; then
     hp*|HP*)
 	  case `uname -m` in
 		ia64)
-			LDLIBRARY='libpython$(VERSION).so'
+			LDLIBRARY='libpvm$(VERSION).so'
 			;;
 		*)
-			LDLIBRARY='libpython$(VERSION).sl'
+			LDLIBRARY='libpvm$(VERSION).sl'
 			;;
 	  esac
 	  BLDLIBRARY='-Wl,+b,$(LIBDIR) -L. -lpython$(VERSION)'
 	  RUNSHARED=SHLIB_PATH=`pwd`:${SHLIB_PATH}
 	  ;;
     OSF*)
-	  LDLIBRARY='libpython$(VERSION).so'
+	  LDLIBRARY='libpvm$(VERSION).so'
 	  BLDLIBRARY='-rpath $(LIBDIR) -L. -lpython$(VERSION)'
 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
 	  ;;
     atheos*)
-	  LDLIBRARY='libpython$(VERSION).so'
+	  LDLIBRARY='libpvm$(VERSION).so'
 	  BLDLIBRARY='-L. -lpython$(VERSION)'
 	  RUNSHARED=DLL_PATH=`pwd`:${DLL_PATH:-/atheos/sys/libs:/atheos/autolnk/lib}
 	  ;;
     Darwin*)
-    	LDLIBRARY='libpython$(VERSION).dylib'
+    	LDLIBRARY='libpvm$(VERSION).dylib'
 	BLDLIBRARY='-L. -lpython$(VERSION)'
 	RUNSHARED='DYLD_LIBRARY_PATH=`pwd`:${DYLD_LIBRARY_PATH}'
 	;;
     AIX*)
-	LDLIBRARY='libpython$(VERSION).so'
+	LDLIBRARY='libpvm$(VERSION).so'
 	RUNSHARED=LIBPATH=`pwd`:${LIBPATH}
 	;;
 
@@ -930,7 +917,7 @@ else # shared is disabled
   case $ac_sys_system in
     CYGWIN*)
           BLDLIBRARY='$(LIBRARY)'
-          LDLIBRARY='libpython$(VERSION).dll.a'
+          LDLIBRARY='libpvm$(VERSION).dll.a'
           ;;
   esac
 fi
@@ -2199,7 +2186,7 @@ AC_MSG_RESULT($CFLAGSFORSHARED)
 # For platforms on which shared libraries are not allowed to have unresolved
 # symbols, this must be set to $(LIBS) (expanded by make). We do this even
 # if it is not required, since it creates a dependency of the shared library
-# to LIBS. This, in turn, means that applications linking the shared libpython
+# to LIBS. This, in turn, means that applications linking the shared libpvm
 # don't need to link LIBS explicitly. The default should be only changed
 # on systems where this approach causes problems.
 AC_SUBST(SHLIBS)

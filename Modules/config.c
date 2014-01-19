@@ -32,36 +32,8 @@ extern void init_sre(void);
 extern void init_codecs(void);
 extern void init_weakref(void);
 extern void initzipimport(void);
-extern void initarray(void);
-extern void initmath(void);
-extern void init_struct(void);
-extern void inittime(void);
-extern void initoperator(void);
-extern void init_random(void);
-extern void init_collections(void);
-extern void init_heapq(void);
-extern void inititertools(void);
-extern void initstrop(void);
-extern void init_functools(void);
-extern void initdatetime(void);
-extern void init_io(void);
-extern void initfcntl(void);
-extern void initspwd(void);
-extern void initgrp(void);
-extern void initselect(void);
-extern void initmmap(void);
-extern void init_csv(void);
-extern void init_socket(void);
-extern void init_ssl(void);
-extern void init_md5(void);
-extern void init_sha(void);
-extern void init_sha256(void);
-extern void init_sha512(void);
-extern void initbinascii(void);
-extern void initcStringIO(void);
 extern void initcPickle(void);
-extern void initzlib(void);
-extern void init_multiprocessing(void);
+extern void initxxsubtype(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -82,36 +54,8 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_codecs", init_codecs},
 	{"_weakref", init_weakref},
 	{"zipimport", initzipimport},
-	{"array", initarray},
-	{"math", initmath},
-	{"_struct", init_struct},
-	{"time", inittime},
-	{"operator", initoperator},
-	{"_random", init_random},
-	{"_collections", init_collections},
-	{"_heapq", init_heapq},
-	{"itertools", inititertools},
-	{"strop", initstrop},
-	{"_functools", init_functools},
-	{"datetime", initdatetime},
-	{"_io", init_io},
-	{"fcntl", initfcntl},
-	{"spwd", initspwd},
-	{"grp", initgrp},
-	{"select", initselect},
-	{"mmap", initmmap},
-	{"_csv", init_csv},
-	{"_socket", init_socket},
-	{"_ssl", init_ssl},
-	{"_md5", init_md5},
-	{"_sha", init_sha},
-	{"_sha256", init_sha256},
-	{"_sha512", init_sha512},
-	{"binascii", initbinascii},
-	{"cStringIO", initcStringIO},
 	{"cPickle", initcPickle},
-	{"zlib", initzlib},
-	{"_multiprocessing", init_multiprocessing},
+	{"xxsubtype", initxxsubtype},
 
 /* -- ADDMODULE MARKER 2 -- */
 
