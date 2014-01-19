@@ -168,11 +168,12 @@ PyAPI_FUNC(PyObject*) _Py_Mangle(PyObject *p, PyObject *name);
 
 /* Define macros for inline documentation. */
 #define PyDoc_VAR(name) static char name[]
-#define PyDoc_STRVAR(name,str) PyDoc_VAR(name) = PyDoc_STR(str)
-#ifdef WITH_DOC_STRINGS
-#define PyDoc_STR(str) str
-#else
+//#define PyDoc_STRVAR(name,str) PyDoc_VAR(name) = PyDoc_STR(str)
+#define PyDoc_STRVAR(name,str) PyDoc_VAR(name) = ""
+//#ifdef WITH_DOC_STRINGS
+//#define PyDoc_STR(str) str
+//#else
 #define PyDoc_STR(str) ""
-#endif
+//#endif
 
 #endif /* !Py_PYTHON_H */

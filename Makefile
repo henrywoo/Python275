@@ -21,7 +21,7 @@
 
 # === Variables set by makesetup ===
 
-MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/operator.o  Modules/_randommodule.o  Modules/_collectionsmodule.o  Modules/_heapqmodule.o  Modules/itertoolsmodule.o  Modules/stropmodule.o  Modules/_functoolsmodule.o  Modules/datetimemodule.o  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o  Modules/fcntlmodule.o  Modules/spwdmodule.o  Modules/grpmodule.o  Modules/selectmodule.o  Modules/mmapmodule.o  Modules/_csv.o  Modules/socketmodule.o  Modules/_ssl.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o  Modules/binascii.o  Modules/cStringIO.o  Modules/cPickle.o  Modules/zlibmodule.o  Modules/multibytecodec.o  Modules/_codecs_cn.o  Modules/_codecs_hk.o  Modules/_codecs_jp.o  Modules/_codecs_tw.o  Modules/multiprocessing.o Modules/socket_connection.o Modules/semaphore.o
+MODOBJS=          Modules/threadmodule.o  Modules/signalmodule.o  Modules/posixmodule.o  Modules/errnomodule.o  Modules/pwdmodule.o  Modules/_sre.o  Modules/_codecsmodule.o  Modules/_weakref.o  Modules/zipimport.o  Modules/arraymodule.o  Modules/mathmodule.o Modules/_math.o  Modules/_struct.o  Modules/timemodule.o  Modules/operator.o  Modules/_randommodule.o  Modules/_collectionsmodule.o  Modules/_heapqmodule.o  Modules/itertoolsmodule.o  Modules/stropmodule.o  Modules/_functoolsmodule.o  Modules/datetimemodule.o  Modules/bufferedio.o Modules/bytesio.o Modules/fileio.o Modules/iobase.o Modules/_iomodule.o Modules/stringio.o Modules/textio.o  Modules/fcntlmodule.o  Modules/spwdmodule.o  Modules/grpmodule.o  Modules/selectmodule.o  Modules/mmapmodule.o  Modules/_csv.o  Modules/socketmodule.o  Modules/_ssl.o  Modules/md5module.o Modules/md5.o  Modules/shamodule.o  Modules/sha256module.o  Modules/sha512module.o  Modules/binascii.o  Modules/cStringIO.o  Modules/cPickle.o  Modules/zlibmodule.o  Modules/multiprocessing.o Modules/socket_connection.o Modules/semaphore.o
 MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 
 # === Variables set by configure
@@ -67,10 +67,10 @@ MKDIR_P=	/bin/mkdir -p
 MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
-OPT=		-DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes
+OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
 BASECFLAGS=	 -fno-strict-aliasing
 #fuheng - strip
-CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS) -s
+CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS) -s
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
@@ -144,7 +144,7 @@ MACOSX_DEPLOYMENT_TARGET=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       LD_LIBRARY_PATH=/nfs/src/Python-2.7.5:
+RUNSHARED=       LD_LIBRARY_PATH=/nfs/src/Python-2.7.5:.
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -205,7 +205,7 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 
 # === Definitions added by makesetup ===
 
-LOCALMODLIBS=                               -L$(SSL)/lib -lssl -lcrypto         -lz      
+LOCALMODLIBS=                               -L$(SSL)/lib -lssl -lcrypto         -lz 
 BASEMODLIBS=
 SSL=/usr/local/ssl
 GLHACK=-Dclear=__GLclear
@@ -247,72 +247,72 @@ LIBFFI_INCLUDEDIR=
 
 ##########################################################################
 # Parser
-PGEN=		Parser/pgen$(EXE)
-
-PSRCS=		\
-		Parser/acceler.c \
-		Parser/grammar1.c \
-		Parser/listnode.c \
-		Parser/node.c \
-		Parser/parser.c \
-		Parser/parsetok.c \
-		Parser/bitset.c \
-		Parser/metagrammar.c \
-		Parser/firstsets.c \
-		Parser/grammar.c \
-		Parser/pgen.c
-
-POBJS=		\
-		Parser/acceler.o \
-		Parser/grammar1.o \
-		Parser/listnode.o \
-		Parser/node.o \
-		Parser/parser.o \
-		Parser/parsetok.o \
-		Parser/bitset.o \
-		Parser/metagrammar.o \
-		Parser/firstsets.o \
-		Parser/grammar.o \
-		Parser/pgen.o
-
-PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
-
-PGSRCS=		\
-		Objects/obmalloc.c \
-		Python/mysnprintf.c \
-		Python/pyctype.c \
-		Parser/tokenizer_pgen.c \
-		Parser/printgrammar.c \
-		Parser/pgenmain.c
-
-PGOBJS=		\
-		Objects/obmalloc.o \
-		Python/mysnprintf.o \
-		Python/pyctype.o \
-		Parser/tokenizer_pgen.o \
-		Parser/printgrammar.o \
-		Parser/pgenmain.o
-
-PARSER_HEADERS= \
-		Parser/parser.h \
-		Parser/tokenizer.h
-
-PGENSRCS=	$(PSRCS) $(PGSRCS)
-PGENOBJS=	$(POBJS) $(PGOBJS)
-
-##########################################################################
-# AST
-AST_H_DIR=	Include
-AST_H=		$(AST_H_DIR)/Python-ast.h
-AST_C_DIR=	Python
-AST_C=		$(AST_C_DIR)/Python-ast.c
-AST_ASDL=	$(srcdir)/Parser/Python.asdl
-
-ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
-# XXX Note that a build now requires Python exist before the build starts
-ASDLGEN=	$(srcdir)/Parser/asdl_c.py
-
-##########################################################################
+#PGEN=		Parser/pgen$(EXE)
+#
+#PSRCS=		\
+#		Parser/acceler.c \
+#		Parser/grammar1.c \
+#		Parser/listnode.c \
+#		Parser/node.c \
+#		Parser/parser.c \
+#		Parser/parsetok.c \
+#		Parser/bitset.c \
+#		Parser/metagrammar.c \
+#		Parser/firstsets.c \
+#		Parser/grammar.c \
+#		Parser/pgen.c
+#
+#POBJS=		\
+#		Parser/acceler.o \
+#		Parser/grammar1.o \
+#		Parser/listnode.o \
+#		Parser/node.o \
+#		Parser/parser.o \
+#		Parser/parsetok.o \
+#		Parser/bitset.o \
+#		Parser/metagrammar.o \
+#		Parser/firstsets.o \
+#		Parser/grammar.o \
+#		Parser/pgen.o
+#
+#PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
+#
+#PGSRCS=		\
+#		Objects/obmalloc.c \
+#		Python/mysnprintf.c \
+#		Python/pyctype.c \
+#		Parser/tokenizer_pgen.c \
+#		Parser/printgrammar.c \
+#		Parser/pgenmain.c
+#
+#PGOBJS=		\
+#		Objects/obmalloc.o \
+#		Python/mysnprintf.o \
+#		Python/pyctype.o \
+#		Parser/tokenizer_pgen.o \
+#		Parser/printgrammar.o \
+#		Parser/pgenmain.o
+#
+#PARSER_HEADERS= \
+#		Parser/parser.h \
+#		Parser/tokenizer.h
+#
+#PGENSRCS=	$(PSRCS) $(PGSRCS)
+#PGENOBJS=	$(POBJS) $(PGOBJS)
+#
+###########################################################################
+## AST
+#AST_H_DIR=	Include
+#AST_H=		$(AST_H_DIR)/Python-ast.h
+#AST_C_DIR=	Python
+#AST_C=		$(AST_C_DIR)/Python-ast.c
+#AST_ASDL=	$(srcdir)/Parser/Python.asdl
+#
+#ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
+## XXX Note that a build now requires Python exist before the build starts
+#ASDLGEN=	$(srcdir)/Parser/asdl_c.py
+#
+###########################################################################
 # Python
 PYTHON_OBJS=	\
 		Python/_warnings.o \
@@ -1471,16 +1471,6 @@ Modules/cPickle.o: $(srcdir)/Modules/cPickle.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)
 Modules/cPickle$(SO):  Modules/cPickle.o; $(BLDSHARED)  Modules/cPickle.o   -o Modules/cPickle$(SO)
 Modules/zlibmodule.o: $(srcdir)/Modules/zlibmodule.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/zlibmodule.c -o Modules/zlibmodule.o
 Modules/zlibmodule$(SO):  Modules/zlibmodule.o; $(BLDSHARED)  Modules/zlibmodule.o  -lz  -o Modules/zlibmodule$(SO)
-Modules/multibytecodec.o: $(srcdir)/Modules/cjkcodecs/multibytecodec.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/multibytecodec.c -o Modules/multibytecodec.o
-Modules/_multibytecodecmodule$(SO):  Modules/multibytecodec.o; $(BLDSHARED)  Modules/multibytecodec.o   -o Modules/_multibytecodecmodule$(SO)
-Modules/_codecs_cn.o: $(srcdir)/Modules/cjkcodecs/_codecs_cn.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_cn.c -o Modules/_codecs_cn.o
-Modules/_codecs_cn$(SO):  Modules/_codecs_cn.o; $(BLDSHARED)  Modules/_codecs_cn.o   -o Modules/_codecs_cn$(SO)
-Modules/_codecs_hk.o: $(srcdir)/Modules/cjkcodecs/_codecs_hk.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_hk.c -o Modules/_codecs_hk.o
-Modules/_codecs_hk$(SO):  Modules/_codecs_hk.o; $(BLDSHARED)  Modules/_codecs_hk.o   -o Modules/_codecs_hk$(SO)
-Modules/_codecs_jp.o: $(srcdir)/Modules/cjkcodecs/_codecs_jp.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_jp.c -o Modules/_codecs_jp.o
-Modules/_codecs_jp$(SO):  Modules/_codecs_jp.o; $(BLDSHARED)  Modules/_codecs_jp.o   -o Modules/_codecs_jp$(SO)
-Modules/_codecs_tw.o: $(srcdir)/Modules/cjkcodecs/_codecs_tw.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/cjkcodecs/_codecs_tw.c -o Modules/_codecs_tw.o
-Modules/_codecs_tw$(SO):  Modules/_codecs_tw.o; $(BLDSHARED)  Modules/_codecs_tw.o   -o Modules/_codecs_tw$(SO)
 Modules/multiprocessing.o: $(srcdir)/Modules/_multiprocessing/multiprocessing.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/multiprocessing.c -o Modules/multiprocessing.o
 Modules/socket_connection.o: $(srcdir)/Modules/_multiprocessing/socket_connection.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/socket_connection.c -o Modules/socket_connection.o
 Modules/semaphore.o: $(srcdir)/Modules/_multiprocessing/semaphore.c; $(CC) $(PY_CFLAGS)  -c $(srcdir)/Modules/_multiprocessing/semaphore.c -o Modules/semaphore.o

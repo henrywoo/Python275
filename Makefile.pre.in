@@ -229,72 +229,72 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
 
 ##########################################################################
 # Parser
-PGEN=		Parser/pgen$(EXE)
-
-PSRCS=		\
-		Parser/acceler.c \
-		Parser/grammar1.c \
-		Parser/listnode.c \
-		Parser/node.c \
-		Parser/parser.c \
-		Parser/parsetok.c \
-		Parser/bitset.c \
-		Parser/metagrammar.c \
-		Parser/firstsets.c \
-		Parser/grammar.c \
-		Parser/pgen.c
-
-POBJS=		\
-		Parser/acceler.o \
-		Parser/grammar1.o \
-		Parser/listnode.o \
-		Parser/node.o \
-		Parser/parser.o \
-		Parser/parsetok.o \
-		Parser/bitset.o \
-		Parser/metagrammar.o \
-		Parser/firstsets.o \
-		Parser/grammar.o \
-		Parser/pgen.o
-
-PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
-
-PGSRCS=		\
-		Objects/obmalloc.c \
-		Python/mysnprintf.c \
-		Python/pyctype.c \
-		Parser/tokenizer_pgen.c \
-		Parser/printgrammar.c \
-		Parser/pgenmain.c
-
-PGOBJS=		\
-		Objects/obmalloc.o \
-		Python/mysnprintf.o \
-		Python/pyctype.o \
-		Parser/tokenizer_pgen.o \
-		Parser/printgrammar.o \
-		Parser/pgenmain.o
-
-PARSER_HEADERS= \
-		Parser/parser.h \
-		Parser/tokenizer.h
-
-PGENSRCS=	$(PSRCS) $(PGSRCS)
-PGENOBJS=	$(POBJS) $(PGOBJS)
-
-##########################################################################
-# AST
-AST_H_DIR=	Include
-AST_H=		$(AST_H_DIR)/Python-ast.h
-AST_C_DIR=	Python
-AST_C=		$(AST_C_DIR)/Python-ast.c
-AST_ASDL=	$(srcdir)/Parser/Python.asdl
-
-ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
-# XXX Note that a build now requires Python exist before the build starts
-ASDLGEN=	$(srcdir)/Parser/asdl_c.py
-
-##########################################################################
+#PGEN=		Parser/pgen$(EXE)
+#
+#PSRCS=		\
+#		Parser/acceler.c \
+#		Parser/grammar1.c \
+#		Parser/listnode.c \
+#		Parser/node.c \
+#		Parser/parser.c \
+#		Parser/parsetok.c \
+#		Parser/bitset.c \
+#		Parser/metagrammar.c \
+#		Parser/firstsets.c \
+#		Parser/grammar.c \
+#		Parser/pgen.c
+#
+#POBJS=		\
+#		Parser/acceler.o \
+#		Parser/grammar1.o \
+#		Parser/listnode.o \
+#		Parser/node.o \
+#		Parser/parser.o \
+#		Parser/parsetok.o \
+#		Parser/bitset.o \
+#		Parser/metagrammar.o \
+#		Parser/firstsets.o \
+#		Parser/grammar.o \
+#		Parser/pgen.o
+#
+#PARSER_OBJS=	$(POBJS) Parser/myreadline.o Parser/tokenizer.o
+#
+#PGSRCS=		\
+#		Objects/obmalloc.c \
+#		Python/mysnprintf.c \
+#		Python/pyctype.c \
+#		Parser/tokenizer_pgen.c \
+#		Parser/printgrammar.c \
+#		Parser/pgenmain.c
+#
+#PGOBJS=		\
+#		Objects/obmalloc.o \
+#		Python/mysnprintf.o \
+#		Python/pyctype.o \
+#		Parser/tokenizer_pgen.o \
+#		Parser/printgrammar.o \
+#		Parser/pgenmain.o
+#
+#PARSER_HEADERS= \
+#		Parser/parser.h \
+#		Parser/tokenizer.h
+#
+#PGENSRCS=	$(PSRCS) $(PGSRCS)
+#PGENOBJS=	$(POBJS) $(PGOBJS)
+#
+###########################################################################
+## AST
+#AST_H_DIR=	Include
+#AST_H=		$(AST_H_DIR)/Python-ast.h
+#AST_C_DIR=	Python
+#AST_C=		$(AST_C_DIR)/Python-ast.c
+#AST_ASDL=	$(srcdir)/Parser/Python.asdl
+#
+#ASDLGEN_FILES=	$(srcdir)/Parser/asdl.py $(srcdir)/Parser/asdl_c.py
+## XXX Note that a build now requires Python exist before the build starts
+#ASDLGEN=	$(srcdir)/Parser/asdl_c.py
+#
+###########################################################################
 # Python
 PYTHON_OBJS=	\
 		Python/_warnings.o \

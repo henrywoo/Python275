@@ -61,11 +61,6 @@ extern void initbinascii(void);
 extern void initcStringIO(void);
 extern void initcPickle(void);
 extern void initzlib(void);
-extern void init_multibytecodec(void);
-extern void init_codecs_cn(void);
-extern void init_codecs_hk(void);
-extern void init_codecs_jp(void);
-extern void init_codecs_tw(void);
 extern void init_multiprocessing(void);
 
 /* -- ADDMODULE MARKER 1 -- */
@@ -116,11 +111,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"cStringIO", initcStringIO},
 	{"cPickle", initcPickle},
 	{"zlib", initzlib},
-	{"_multibytecodec", init_multibytecodec},
-	{"_codecs_cn", init_codecs_cn},
-	{"_codecs_hk", init_codecs_hk},
-	{"_codecs_jp", init_codecs_jp},
-	{"_codecs_tw", init_codecs_tw},
 	{"_multiprocessing", init_multiprocessing},
 
 /* -- ADDMODULE MARKER 2 -- */

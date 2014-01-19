@@ -1066,15 +1066,15 @@ then
 	    if test "$Py_DEBUG" = 'true' ; then
 		# Optimization messes up debuggers, so turn it off for
 		# debug builds.
-		OPT="-g -O0 -Wall $STRICT_PROTO"
+		OPT="-g -O3 -Wall $STRICT_PROTO"
 	    else
 		#OPT="-g $WRAP -O3 -Wall $STRICT_PROTO"
-		OPT="$WRAP -g -O0 -Wall $STRICT_PROTO"
+		OPT="$WRAP -O3 -Wall $STRICT_PROTO"
 	    fi
 	    ;;
 	*)
-	    #OPT="-O3 -Wall $STRICT_PROTO"
-	    OPT="-O0 -g -Wall $STRICT_PROTO"
+	    OPT="-O3 -Wall $STRICT_PROTO"
+	    #OPT="-O0 -g -Wall $STRICT_PROTO"
 	    ;;
 	esac
 	case $ac_sys_system in
@@ -1084,7 +1084,7 @@ then
 	;;
 
     *)
-	OPT="-O0"
+	OPT="-O3"
 	;;
     esac
 fi
