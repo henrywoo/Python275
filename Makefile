@@ -227,7 +227,7 @@ DESTLIB=$(LIBDEST)
 MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
-		Modules/main2.o \
+		Modules/pvmrun.o \
 		Modules/gcmodule.o \
 #		Modules/main.o \
 
