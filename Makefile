@@ -28,18 +28,18 @@ MODLIBS=        $(LOCALMODLIBS) $(BASEMODLIBS)
 VERSION=	2.7
 srcdir=		.
 
-abs_srcdir=	/nfs/src/Python-2.7.5
-abs_builddir=	/nfs/src/Python-2.7.5
+abs_srcdir=	/root/accellion/Python275-Master
+abs_builddir=	/root/accellion/Python275-Master
 build=		x86_64-unknown-linux-gnu
 host=		x86_64-unknown-linux-gnu
 
 CC=		gcc -pthread
-CXX=		g++ -pthread
+CXX=		g++
 MAINCC=		$(CC)
 LINKCC=		$(PURIFY) $(MAINCC)
 AR=		ar
 RANLIB=		ranlib
-SVNVERSION=	svnversion $(srcdir)
+SVNVERSION=	echo Unversioned directory
 HGVERSION=	
 HGTAG=		
 HGBRANCH=	
@@ -70,11 +70,11 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 OPT=		-DNDEBUG -fwrapv -O3 -Wall -Wstrict-prototypes
 BASECFLAGS=	 -fno-strict-aliasing
 #fuheng - strip
-CFLAGS=		$(BASECFLAGS) -g -O2 $(OPT) $(EXTRA_CFLAGS) -s
+CFLAGS=		$(BASECFLAGS) -O3 $(OPT) $(EXTRA_CFLAGS) -s
 # Both CPPFLAGS and LDFLAGS need to contain the shell's value for setup.py to
 # be able to build extension modules using the directories specified in the
 # environment variables
-CPPFLAGS=	-g -I. -IInclude -I$(srcdir)/Include 
+CPPFLAGS=	 -I. -IInclude -I$(srcdir)/Include 
 LDFLAGS=	
 LDLAST=		
 SGI_ABI=	
@@ -91,7 +91,7 @@ PY_CFLAGS=	$(CFLAGS) $(CPPFLAGS) $(CFLAGSFORSHARED) -DPy_BUILD_CORE
 MACHDEP=	linux2
 
 # Multiarch directory (may be empty)
-MULTIARCH=	x86_64-linux-gnu
+MULTIARCH=	
 
 # Install prefix for architecture-independent files
 prefix=		/usr/local/py275
@@ -144,7 +144,7 @@ MACOSX_DEPLOYMENT_TARGET=
 OTHER_LIBTOOL_OPT=
 
 # Environment to run shared python without installed libraries
-RUNSHARED=       LD_LIBRARY_PATH=/nfs/src/Python-2.7.5:.:/usr/local/py275/lib/python2.7/lib-dynload/
+RUNSHARED=       LD_LIBRARY_PATH=/root/accellion/Python275-Master:.
 
 # Modes for directories, executables and data files created by the
 # install process.  Default to user-only-writable for all file types.
@@ -153,7 +153,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug' '--without-doc-strings'
+CONFIG_ARGS=	 '--prefix=/usr/local/py275' '--enable-shared' '--without-pydebug'
 
 
 # Subdirectories with code
@@ -227,8 +227,8 @@ DESTLIB=$(LIBDEST)
 MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
-		Modules/pvmrun.o \
 		Modules/gcmodule.o \
+#		Modules/pvmrun.o \
 #		Modules/main.o \
 
 # Used of signalmodule.o is not available
@@ -339,7 +339,6 @@ PYTHON_OBJS=	\
 		Python/pythonrun.o \
 		Python/random.o \
 		Python/structmember.o \
-		Python/symtable.o \
 		Python/sysmodule.o \
 		Python/traceback.o \
 		Python/getopt.o \
@@ -355,6 +354,7 @@ PYTHON_OBJS=	\
 		Python/bltinmodule.o \
 		Python/ceval.o \
 		Python/getcompiler.o \
+#		Python/symtable.o \
 #		Python/Python-ast.o \
 #		Python/graminit.o \
 #		Python/asdl.o \
@@ -458,8 +458,8 @@ coverage:
 #			Modules/python.o \
 #			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
 
-$(BUILDPVM):	Modules/pvm.o $(LIBRARY) $(LDLIBRARY)
-		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ Modules/pvm.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+$(BUILDPVM):	Python/pvm.o $(LIBRARY) $(LDLIBRARY)
+		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ Python/pvm.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
 
 #platform: $(BUILDPYTHON) pybuilddir.txt
 #	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
@@ -608,8 +608,8 @@ Modules/getpath.o: $(srcdir)/Modules/getpath.c Makefile
 Modules/python.o: $(srcdir)/Modules/python.c
 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
 
-Modules/pvm.o: $(srcdir)/Modules/pvm.c
-	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/pvm.c
+Python/pvm.o: $(srcdir)/Python/pvm.c
+	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Python/pvm.c
 
 Modules/posixmodule.o: $(srcdir)/Modules/posixmodule.c $(srcdir)/Modules/posixmodule.h
 

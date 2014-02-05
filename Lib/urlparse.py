@@ -70,68 +70,68 @@ def clear_cache():
     _parse_cache.clear()
 
 
-class ResultMixin(object):
-    """Shared methods for the parsed result objects."""
-
-    @property
-    def username(self):
-        netloc = self.netloc
-        if "@" in netloc:
-            userinfo = netloc.rsplit("@", 1)[0]
-            if ":" in userinfo:
-                userinfo = userinfo.split(":", 1)[0]
-            return userinfo
-        return None
-
-    @property
-    def password(self):
-        netloc = self.netloc
-        if "@" in netloc:
-            userinfo = netloc.rsplit("@", 1)[0]
-            if ":" in userinfo:
-                return userinfo.split(":", 1)[1]
-        return None
-
-    @property
-    def hostname(self):
-        netloc = self.netloc.split('@')[-1]
-        if '[' in netloc and ']' in netloc:
-            return netloc.split(']')[0][1:].lower()
-        elif ':' in netloc:
-            return netloc.split(':')[0].lower()
-        elif netloc == '':
-            return None
-        else:
-            return netloc.lower()
-
-    @property
-    def port(self):
-        netloc = self.netloc.split('@')[-1].split(']')[-1]
-        if ':' in netloc:
-            port = netloc.split(':')[1]
-            port = int(port, 10)
-            # verify legal port
-            if (0 <= port <= 65535):
-                return port
-        return None
-
-from collections import namedtuple
-
-class SplitResult(namedtuple('SplitResult', 'scheme netloc path query fragment'), ResultMixin):
-
-    __slots__ = ()
-
-    def geturl(self):
-        return urlunsplit(self)
-
-
-class ParseResult(namedtuple('ParseResult', 'scheme netloc path params query fragment'), ResultMixin):
-
-    __slots__ = ()
-
-    def geturl(self):
-        return urlunparse(self)
-
+#class ResultMixin(object):
+#    """Shared methods for the parsed result objects."""
+#
+#    @property
+#    def username(self):
+#        netloc = self.netloc
+#        if "@" in netloc:
+#            userinfo = netloc.rsplit("@", 1)[0]
+#            if ":" in userinfo:
+#                userinfo = userinfo.split(":", 1)[0]
+#            return userinfo
+#        return None
+#
+#    @property
+#    def password(self):
+#        netloc = self.netloc
+#        if "@" in netloc:
+#            userinfo = netloc.rsplit("@", 1)[0]
+#            if ":" in userinfo:
+#                return userinfo.split(":", 1)[1]
+#        return None
+#
+#    @property
+#    def hostname(self):
+#        netloc = self.netloc.split('@')[-1]
+#        if '[' in netloc and ']' in netloc:
+#            return netloc.split(']')[0][1:].lower()
+#        elif ':' in netloc:
+#            return netloc.split(':')[0].lower()
+#        elif netloc == '':
+#            return None
+#        else:
+#            return netloc.lower()
+#
+#    @property
+#    def port(self):
+#        netloc = self.netloc.split('@')[-1].split(']')[-1]
+#        if ':' in netloc:
+#            port = netloc.split(':')[1]
+#            port = int(port, 10)
+#            # verify legal port
+#            if (0 <= port <= 65535):
+#                return port
+#        return None
+#
+#from collections import namedtuple
+#
+#class SplitResult(namedtuple('SplitResult', 'scheme netloc path query fragment'), ResultMixin):
+#
+#    __slots__ = ()
+#
+#    def geturl(self):
+#        return urlunsplit(self)
+#
+#
+#class ParseResult(namedtuple('ParseResult', 'scheme netloc path params query fragment'), ResultMixin):
+#
+#    __slots__ = ()
+#
+#    def geturl(self):
+#        return urlunparse(self)
+#
 
 def urlparse(url, scheme='', allow_fragments=True):
     """Parse a URL into 6 components:

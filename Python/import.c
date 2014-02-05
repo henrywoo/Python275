@@ -1282,7 +1282,7 @@ static struct filedescr *
 find_module(char *fullname, char *subname, PyObject *path, char *buf,
             size_t buflen, FILE **p_fp, PyObject **p_loader)
 {
-    printf("%s fullname:%s subname:%s buflen:%d\n",__func__,fullname, subname, buflen);
+    //printf("%s fullname:%s subname:%s buflen:%d\n",__func__,fullname, subname, buflen);
     Py_ssize_t i, npath;
     size_t len, namelen;
     struct filedescr *fdp = NULL;
@@ -1503,7 +1503,7 @@ find_module(char *fullname, char *subname, PyObject *path, char *buf,
               buf[sz]='o';
               buf[sz+1]='\0';
             }*/
-            printf("%s buf:%s\n",__func__,buf);
+            //printf("%s buf:%s\n",__func__,buf);
             fp = fopen(buf, filemode);
             if (fp != NULL) {
                 if (case_ok(buf, len, namelen, name))
@@ -2459,7 +2459,7 @@ load_next(PyObject *mod, PyObject *altmod, char **p_name, char *buf,
         return NULL;
     }
     strncpy(p, name, len);
-    printf("%s name:%s\n",__func__,p);
+    //printf("%s name:%s\n",__func__,p);
     p[len] = '\0';
     *p_buflen = p+len-buf;
 

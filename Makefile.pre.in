@@ -210,8 +210,8 @@ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 MODULE_OBJS=	\
 		Modules/config.o \
 		Modules/getpath.o \
-		Modules/pvmrun.o \
 		Modules/gcmodule.o \
+#		Modules/pvmrun.o \
 #		Modules/main.o \
 
 # Used of signalmodule.o is not available
@@ -322,7 +322,6 @@ PYTHON_OBJS=	\
 		Python/pythonrun.o \
 		Python/random.o \
 		Python/structmember.o \
-		Python/symtable.o \
 		Python/sysmodule.o \
 		Python/traceback.o \
 		Python/getopt.o \
@@ -338,6 +337,7 @@ PYTHON_OBJS=	\
 		Python/bltinmodule.o \
 		Python/ceval.o \
 		Python/getcompiler.o \
+#		Python/symtable.o \
 #		Python/Python-ast.o \
 #		Python/graminit.o \
 #		Python/asdl.o \
@@ -441,8 +441,8 @@ coverage:
 #			Modules/python.o \
 #			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
 
-$(BUILDPVM):	Modules/pvm.o $(LIBRARY) $(LDLIBRARY)
-		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ Modules/pvm.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+$(BUILDPVM):	Python/pvm.o $(LIBRARY) $(LDLIBRARY)
+		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ Python/pvm.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
 
 #platform: $(BUILDPYTHON) pybuilddir.txt
 #	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
@@ -591,8 +591,8 @@ Modules/getpath.o: $(srcdir)/Modules/getpath.c Makefile
 Modules/python.o: $(srcdir)/Modules/python.c
 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
 
-Modules/pvm.o: $(srcdir)/Modules/pvm.c
-	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/pvm.c
+Python/pvm.o: $(srcdir)/Python/pvm.c
+	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Python/pvm.c
 
 Modules/posixmodule.o: $(srcdir)/Modules/posixmodule.c $(srcdir)/Modules/posixmodule.h
 
