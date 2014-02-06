@@ -1,4 +1,23 @@
-Python Virtual Machine(PVM)
+Python Virtual Machine(PVM) is a pure Python interpreter backend.
 
-Dynamic Building
+Summary:
 
+Python = Parser(front end) + PVM(back end)
+
+Where
+
+Parser is like a translator which converts source code into bytecode recognizable by PVM. Specifically, the Parser firstly loads the CST/parse tree into memory, which represents python's Grammar. Then it load python source code, parse it into tokens, and build an AST(abstract syntax tree) by jumping around in the DFAs. Once the AST is ready, python will generate symbol tables and bytecode and feed it into PVM.
+
+PVM is like a virtual CPU (the evaluator), and storage which has 3 things: code objects, state objects, and “regular” objects. The evaluator evaluates the code objects in the context of state objects; the state objects have pointers to namespaces which contain regular objects which the evaluator uses.
+
+Specifically, we need to modify standard library a little bit:
+
+cPickle.c - replace or disable PyRun_String(Guido also mentioned this long time ago: https://mail.python.org/pipermail/python-dev/2002-August/027572.html)
+
+urlparse - unnecessarily use namedtuples which creates types on the fly 
+
+Replace or disable namedtuple
+
+TODO:
+
+bytecode encryption/optimization
